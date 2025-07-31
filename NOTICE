@@ -1,0 +1,37 @@
+RunVSAgent
+Copyright 2009-2025 Weibo, Inc.
+
+This product includes software developed by Weibo, Inc.
+(https://weibo.com/)
+
+This software contains unmodified binary redistributions for H2 database engine (http://www.h2database.com/),
+which is dual licensed and available under the MPL 2.0 (Mozilla Public License) or under the EPL 1.0 (Eclipse Public License).
+An original copy of the license agreement can be found at: http://www.h2database.com/html/license.html
+
+This product includes software developed by the VSCode project
+(https://github.com/microsoft/vscode)
+
+This product includes software developed by Microsoft Corporation
+(https://www.microsoft.com/)
+
+This product includes software developed by the Node.js project
+(https://nodejs.org/)
+
+This product includes software developed by the TypeScript project
+(https://www.typescriptlang.org/)
+
+This product includes software developed by JetBrains s.r.o.
+(https://www.jetbrains.com/)
+
+This product includes software developed by the Kotlin project
+(https://kotlinlang.org/)
+
+This product includes software developed by Google Inc.
+(https://www.google.com/)
+
+This product includes software developed by the Apache Software Foundation
+(http://www.apache.org/)
+
+This product includes software developed by various open source contributors.
+For detailed information about third-party components and their licenses,
+please refer to the dependency declarations in package.json and build.gradle.kts files.
