@@ -1,0 +1,56 @@
+.DS_Store
+*.log
+debug-resources
+
+.pnpm-store
+dist
+out
+out-*
+node_modules
+coverage/
+
+.DS_Store
+
+# Builds
+bin/
+roo-cline-*.vsix
+
+# Local prompts and rules
+/local-prompts
+
+# Test environment
+.test_env
+.vscode-test/
+
+# Docs
+docs/_site/
+
+# Dotenv
+.env
+.env.*
+!.env.*.sample
+
+
+#Local lint config
+.eslintrc.local.json
+
+#Logging
+logs
+.idea/
+*.vsix
+# Vite development
+.vite-port
+
+# cursor
+.cursor/rules/
+.cursor/prompts/
+
+# vscode import
+extension_host/vscode/*
+deps/roo-code/*
+deps/vscode/*
+!deps/roo-code/.git
+!deps/vscode/.git
+jetbrains_plugin/roo-code
+jetbrains_plugin/build
+.gradle
