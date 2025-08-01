@@ -8,6 +8,10 @@
 
 RunVSAgent is an innovative cross-platform development tool that enables developers to run VSCode-based coding agents and extensions within JetBrains IDEs (IntelliJ IDEA, WebStorm, PyCharm, etc.).
 
+## 📸 Screenshot
+
+![RunVSAgent Screenshot](docs/screenshot.jpg)
+
 ## 🚀 Core Features
 
 - **VSCode Agent Compatibility**: Seamlessly run VSCode-based coding agents in JetBrains IDEs
