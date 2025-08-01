@@ -5,7 +5,7 @@
 package com.sina.weibo.agent.util
 
 object PluginConstants {
-    const val PLUGIN_ID = "roo-cline"
+    const val PLUGIN_ID = "RunVSAgent"
     const val PLUGIN_CODE_DIR = "roo-code"
     const val NODE_MODULES_PATH = "node_modules"
     const val EXTENSION_ENTRY_FILE = "extension.js"
