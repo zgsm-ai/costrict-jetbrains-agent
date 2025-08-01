@@ -59,15 +59,7 @@ graph TB
 
 ## 📦 Installation
 
-### Method 1: Install from Marketplace (Recommended)
-
-1. Open your JetBrains IDE
-2. Go to `Settings/Preferences` → `Plugins`
-3. Search for "RunVSAgent"
-4. Click `Install`
-5. Restart IDE to complete installation
-
-### Method 2: Build from Source
+### Build from Source
 
 #### Prerequisites
 - Node.js 18.0+
