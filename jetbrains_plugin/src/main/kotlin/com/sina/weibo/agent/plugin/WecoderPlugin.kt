@@ -27,7 +27,6 @@ import com.sina.weibo.agent.core.*
 import com.sina.weibo.agent.util.ExtensionUtils
 import com.sina.weibo.agent.util.PluginConstants
 import com.sina.weibo.agent.util.PluginResourceUtil
-import com.sina.weibo.agent.util.UpdateChecker
 import java.io.File
 
 /**
@@ -163,7 +162,6 @@ class WecoderPluginService(private var currentProject: Project) : Disposable {
                 } else {
                     Logger.getInstance(WecoderPluginService::class.java).warn("Cannot load config file, use default debug mode: $DEBUG_MODE")
                 }
-                UpdateChecker.instance.startChecking()
             } catch (e: Exception) {
                 Logger.getInstance(WecoderPluginService::class.java).warn("Error reading config file, use default debug mode: $DEBUG_MODE", e)
             }
