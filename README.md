@@ -19,6 +19,7 @@ RunVSAgent is an innovative cross-platform development tool that enables develop
 
 ## 🔧 Supported IDEs
 
+### Jetbrains IDEs
 RunVSAgent currently supports the following JetBrains IDE series:
 
 - **IntelliJ IDEA** (Ultimate & Community)
@@ -34,7 +35,10 @@ RunVSAgent currently supports the following JetBrains IDE series:
 
 > **Note**: Requires JetBrains IDE version 2023.1 or later for optimal compatibility.
 
-## 🤖 Supported Agent
+### XCode IDE
+Working on it...
+
+## 🤖 Supported Agents
 
 - **[Roo Code](https://roocode.com)**: Advanced AI-powered coding assistant with intelligent code generation and refactoring capabilities
 
