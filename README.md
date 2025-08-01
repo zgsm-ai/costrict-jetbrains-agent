@@ -4,9 +4,9 @@
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
 [![JetBrains](https://img.shields.io/badge/JetBrains-IntelliJ%20Platform-orange.svg)](https://www.jetbrains.com/)
 
-> **Run VSCode-based Coding Agents in JetBrains IDEs**
+> **Run VSCode-based Coding Agents in Other IDE platforms**
 
-RunVSAgent is an innovative cross-platform development tool that enables developers to run VSCode-based coding agents and extensions within JetBrains IDEs (IntelliJ IDEA, WebStorm, PyCharm, etc.).
+RunVSAgent is an innovative cross-platform development tool that enables developers to run VSCode-based coding agents and extensions within JetBrains IDEs (IntelliJ IDEA, WebStorm, PyCharm, etc.) or other IDE platforms. 
 
 ## 📸 Screenshot
 
@@ -16,6 +16,23 @@ RunVSAgent is an innovative cross-platform development tool that enables develop
 
 - **VSCode Agent Compatibility**: Seamlessly run VSCode-based coding agents in JetBrains IDEs
 - **Cross-IDE Development**: Unified agent experience across different IDE platforms
+
+## 🔧 Supported IDEs
+
+RunVSAgent currently supports the following JetBrains IDE series:
+
+- **IntelliJ IDEA** (Ultimate & Community)
+- **WebStorm** - JavaScript and TypeScript development
+- **PyCharm** (Professional & Community) - Python development
+- **PhpStorm** - PHP development
+- **RubyMine** - Ruby development
+- **CLion** - C/C++ development
+- **GoLand** - Go development
+- **DataGrip** - Database development
+- **Rider** - .NET development
+- **Android Studio** - Android development
+
+> **Note**: Requires JetBrains IDE version 2023.1 or later for optimal compatibility.
 
 ## 🤖 Supported Agent
 
