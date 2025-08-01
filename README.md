@@ -80,6 +80,22 @@ graph TB
 
 ## 📦 Installation
 
+### Download from GitHub Releases
+
+You can download the pre-built plugin from our GitHub releases page:
+
+1. **Download Plugin**: Visit the [GitHub Releases](https://github.com/wecode-ai/RunVSAgent/releases) page and download the latest plugin file (`.zip` format)
+
+2. **Install in JetBrains IDE**:
+   - Open your JetBrains IDE (IntelliJ IDEA, WebStorm, PyCharm, etc.)
+   - Go to `Settings/Preferences` → `Plugins`
+   - Click the gear icon ⚙️ and select `Install Plugin from Disk...`
+   - Select the downloaded `.zip` file
+   - Restart your IDE when prompted
+
+3. **Verify Installation**: After restart, you should see the RunVSAgent plugin in your IDE's plugin list
+
+
 ### Build from Source
 
 #### Prerequisites
