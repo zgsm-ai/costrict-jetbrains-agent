@@ -375,8 +375,18 @@ build_idea_plugin() {
         chmod +x "./gradlew"
     fi
     
-    # Build plugin
-    execute_cmd "$gradle_cmd buildPlugin" "IDEA plugin build"
+    # Set debugMode based on BUILD_MODE
+    local debug_mode="none"
+    if [[ "$BUILD_MODE" == "$BUILD_MODE_RELEASE" ]]; then
+        debug_mode="release"
+        log_info "Building IDEA plugin in release mode (debugMode=release)"
+    elif [[ "$BUILD_MODE" == "$BUILD_MODE_DEBUG" ]]; then
+        debug_mode="idea"
+        log_info "Building IDEA plugin in debug mode (debugMode=idea)"
+    fi
+    
+    # Build plugin with debugMode property
+    execute_cmd "$gradle_cmd -PdebugMode=$debug_mode buildPlugin" "IDEA plugin build"
     
     # Find generated plugin
     local plugin_file
