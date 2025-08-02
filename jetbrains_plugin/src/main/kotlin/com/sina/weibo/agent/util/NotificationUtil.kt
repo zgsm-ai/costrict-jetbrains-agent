@@ -15,7 +15,7 @@ import com.intellij.openapi.project.ProjectManager
  */
 object NotificationUtil {
     
-    private const val NOTIFICATION_GROUP_ID = "roo-cline"
+    private const val NOTIFICATION_GROUP_ID = "RunVSAgent"
     
     /**
      * Show error notification

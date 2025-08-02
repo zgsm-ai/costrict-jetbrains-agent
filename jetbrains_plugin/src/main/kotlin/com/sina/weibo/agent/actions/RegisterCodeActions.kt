@@ -170,7 +170,7 @@ fun registerCodeAction(
                 userInput = Messages.showInputDialog(
                     project,
                     inputPrompt,
-                    "roo-cline",
+                    "RunVSAgent",
                     null,
                     inputPlaceholder,
                     null
