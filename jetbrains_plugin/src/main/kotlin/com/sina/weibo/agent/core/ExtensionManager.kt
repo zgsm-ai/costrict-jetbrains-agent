@@ -47,7 +47,7 @@ class ExtensionManager : Disposable {
         val packageJson = gson.fromJson(packageJsonContent, PackageJson::class.java)
         
         // Create extension identifier
-        val name = "RunVSAgent:"+packageJson.name
+        val name = "RunVSAgent."+packageJson.name
         val publisher = "WeCode-AI"
         val extensionIdentifier = ExtensionIdentifier("$publisher.$name")
         
