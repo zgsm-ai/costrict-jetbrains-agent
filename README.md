@@ -117,11 +117,7 @@ cd RunVSAgent
 # 3. Build the project
 ./scripts/build.sh
 
-# 4. Build JetBrains plugin
-cd jetbrains_plugin
-./gradlew buildPlugin
-
-# 5. Install plugin
+# 4. Install plugin
 # Plugin file located at: jetbrains_plugin/build/distributions/
 # In IDE: Settings → Plugins → Install Plugin from Disk
 ```
