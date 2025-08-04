@@ -198,7 +198,7 @@ RunVSAgent/
 ### 维护者
 
 - **组织**：WeCode-AI 团队，微博公司
-- **联系方式**：[GitHub Issues](https://github.com/your-org/RunVSAgent/issues)
+- **联系方式**：[GitHub Issues](https://github.com/wecode-ai/RunVSAgent/issues)
 - **网站**：[https://weibo.com](https://weibo.com)
 
 ---
