@@ -199,7 +199,7 @@ This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE) fo
 ### Maintainers
 
 - **Organization**: WeCode-AI Team, Weibo Inc.
-- **Contact**: [GitHub Issues](https://github.com/your-org/RunVSAgent/issues)
+- **Contact**: [GitHub Issues](https://github.com/wecode-ai/RunVSAgent/issues)
 - **Website**: [https://weibo.com](https://weibo.com)
 
 ---
