@@ -681,15 +681,113 @@ class RPCProtocol(
      */
     private suspend fun doInvokeHandler(rpcId: Int, methodName: String, args: List<Any?>): Any? {
         val actor = locals[rpcId] ?: throw IllegalStateException("Unknown actor ${getStringIdentifierForProxy(rpcId)}")
-       // Use reflection to get method
+       // Use reflection to get method with parameter type matching
        val method = try {
-           // Simplified here, should consider method overloading in actual implementation
-           actor::class.functions.first { it.name == methodName }
+           findBestMatchingMethod(actor, methodName, args)
        } catch (e: Exception) {
            throw IllegalStateException("Unknown method $methodName on actor ${getStringIdentifierForProxy(rpcId)}")
        }
 
         return doInvokeMethod(method, args, actor)
+    }
+
+    /**
+     * Find the best matching method based on method name and argument types
+     */
+    private fun findBestMatchingMethod(actor: Any, methodName: String, args: List<Any?>): kotlin.reflect.KFunction<*> {
+        val candidateMethods = actor::class.functions.filter { it.name == methodName }
+        
+        if (candidateMethods.isEmpty()) {
+            throw NoSuchMethodException("No method named '$methodName' found")
+        }
+        
+        if (candidateMethods.size == 1) {
+            return candidateMethods.first()
+        }
+        
+        // Find method with matching parameter count (excluding the receiver parameter)
+        val methodsWithMatchingParamCount = candidateMethods.filter { method ->
+            val paramCount = method.parameters.size - 1 // Exclude receiver parameter
+            paramCount == args.size
+        }
+        
+        if (methodsWithMatchingParamCount.isEmpty()) {
+            // If no exact parameter count match, try to find a method that can accept the arguments
+            val compatibleMethods = candidateMethods.filter { method ->
+                val paramCount = method.parameters.size - 1
+                paramCount >= args.size // Method can accept fewer arguments (with defaults)
+            }
+            if (compatibleMethods.isNotEmpty()) {
+                return compatibleMethods.first()
+            }
+            throw NoSuchMethodException("No method '$methodName' with ${args.size} parameters found")
+        }
+        
+        if (methodsWithMatchingParamCount.size == 1) {
+            return methodsWithMatchingParamCount.first()
+        }
+        
+        // Multiple methods with same parameter count, try to match by type
+        for (method in methodsWithMatchingParamCount) {
+            if (isMethodCompatible(method, args)) {
+                return method
+            }
+        }
+        
+        // If no perfect match, return the first one with matching parameter count
+        return methodsWithMatchingParamCount.first()
+    }
+    
+    /**
+     * Check if a method is compatible with the given arguments
+     */
+    private fun isMethodCompatible(method: kotlin.reflect.KFunction<*>, args: List<Any?>): Boolean {
+        val parameters = method.parameters.drop(1) // Skip receiver parameter
+        
+        if (parameters.size != args.size) {
+            return false
+        }
+        
+        for (i in parameters.indices) {
+            val param = parameters[i]
+            val arg = args[i]
+            
+            if (arg == null) {
+                // Null argument is compatible with nullable parameters
+                if (!param.type.isMarkedNullable) {
+                    return false
+                }
+            } else {
+                // Check type compatibility
+                val argClass = arg::class.java
+                val paramClass = param.type.classifier as? kotlin.reflect.KClass<*>
+                
+                if (paramClass != null) {
+                    val paramJavaClass = paramClass.java
+                    
+                    // Handle primitive type conversions (similar to doInvokeMethod)
+                    val isCompatible = when {
+                        paramJavaClass.isAssignableFrom(argClass) -> true
+                        // Handle Double to numeric type conversions
+                        arg is Double && (paramJavaClass == Int::class.java ||
+                                         paramJavaClass == Long::class.java ||
+                                         paramJavaClass == Float::class.java ||
+                                         paramJavaClass == Short::class.java ||
+                                         paramJavaClass == Byte::class.java ||
+                                         paramJavaClass == Boolean::class.java) -> true
+                        // Handle String compatibility
+                        arg is String && paramJavaClass == String::class.java -> true
+                        else -> false
+                    }
+                    
+                    if (!isCompatible) {
+                        return false
+                    }
+                }
+            }
+        }
+        
+        return true
     }
 
 
