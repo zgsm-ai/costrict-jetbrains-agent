@@ -17,6 +17,34 @@ plugins {
 
 apply("genPlatform.gradle")
 
+// ------------------------------------------------------------
+// The 'debugMode' setting controls how plugin resources are prepared during the build process.
+// It supports the following three modes:
+//
+// 1. "idea" — Local development mode (used for debugging VSCode plugin integration)
+//    - Copies theme resources from src/main/resources/themes to:
+//        ../debug-resources/<vscodePlugin>/src/integrations/theme/default-themes/
+//    - Automatically creates a .env file, which the Extension Host (Node.js side) reads at runtime.
+//    - Enables the VSCode plugin to load resources from this directory for integration testing.
+//    - Typically used when running IntelliJ with an Extension Host for live debugging and hot-reloading.
+//
+// 2. "release" — Production build mode (used to generate deployment artifacts)
+//    - Requires platform.zip to exist, which can be retrieved via git-lfs or generated with genPlatform.gradle.
+//    - This file includes the full runtime environment for VSCode plugins (e.g., node_modules, platform.txt).
+//    - The zip is extracted to build/platform/, and its node_modules take precedence over other dependencies.
+//    - Copies compiled extension_host outputs (dist, package.json, node_modules) and plugin resources.
+//    - The result is a fully self-contained package ready for deployment across platforms.
+//
+// 3. "none" (default) — Lightweight mode (used for testing and CI)
+//    - Does not rely on platform.zip or prepare VSCode runtime resources.
+//    - Only copies the plugin's core assets such as themes.
+//    - Useful for early-stage development, static analysis, unit tests, and continuous integration pipelines.
+//
+// How to configure:
+//   - Set via gradle argument: -PdebugMode=idea / release / none
+//     Example: ./gradlew prepareSandbox -PdebugMode=idea
+//   - Defaults to "none" if not explicitly set.
+// ------------------------------------------------------------
 ext {
     set("debugMode", project.findProperty("debugMode") ?: "none")
     set("debugResource", project.projectDir.resolve("../debug-resources").absolutePath)
