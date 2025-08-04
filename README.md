@@ -191,6 +191,7 @@ We thank all the contributors who have helped make this project better:
 
 ### 🚀 Contributors
 
+- [junbaor](https://github.com/junbaor)
 
 ### License
 

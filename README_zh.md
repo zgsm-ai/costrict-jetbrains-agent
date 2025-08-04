@@ -190,6 +190,7 @@ RunVSAgent/
 
 ### 🚀 贡献者
 
+ [junbaor](https://github.com/junbaor)
 
 ### 许可证
 
