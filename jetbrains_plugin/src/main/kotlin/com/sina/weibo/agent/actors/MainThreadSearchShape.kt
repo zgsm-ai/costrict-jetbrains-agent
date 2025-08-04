@@ -155,7 +155,6 @@ class MainThreadSearch : MainThreadSearchShape {
     override fun handleTelemetry(eventName: String, data: Any?) {
         try {
             logger.info("Handling telemetry: event=$eventName, data=$data")
-            // TODO: Actual implementation should send telemetry data to relevant services
         } catch (e: Exception) {
             logger.error("Failed to handle telemetry data", e)
         }
