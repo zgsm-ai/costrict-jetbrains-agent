@@ -4,6 +4,7 @@
 
 package com.sina.weibo.agent.actors
 
+import com.google.common.collect.Maps
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
@@ -29,6 +30,7 @@ interface MainThreadDocumentsShape {
     suspend fun tryCreateDocument(options: Map<String, Any?>?): Map<String, Any?>
     suspend fun tryOpenDocument(uri: Map<String, Any?>, options: Map<String, Any?>?): Map<String, Any?>
     suspend fun trySaveDocument(uri: Map<String, Any?>): Boolean
+    suspend fun tryOpenDocument(map: Map<String, Any?>, options: String?): Map<String, Any?>
 }
 
 class MainThreadDocuments(var project: Project) : MainThreadDocumentsShape {
@@ -109,6 +111,11 @@ class MainThreadDocuments(var project: Project) : MainThreadDocumentsShape {
 
         logger.info("tryOpenDocument : ${uri.path} execution completed")
         return map
+    }
+
+    // This function is designed to work around a VS Code type system issue where a string argument may be incorrectly treated as an options: {} object. To prevent this, multiple function overloads are declared.
+    override suspend fun tryOpenDocument(map: Map<String, Any?>, options: String?): Map<String, Any?> {
+        return tryOpenDocument(map, HashMap())
     }
 
     override suspend fun trySaveDocument(map: Map<String, Any?>): Boolean {
