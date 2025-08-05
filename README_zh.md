@@ -217,4 +217,7 @@ RunVSAgent/
 
 ---
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=wecode-ai/RunVSAgent&type=Date)](https://www.star-history.com/#wecode-ai/RunVSAgent&Date)
 **由 WeCode-AI 团队用 ❤️ 制作**
