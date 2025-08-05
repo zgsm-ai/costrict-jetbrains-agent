@@ -82,6 +82,19 @@ graph TB
 
 ## 📦 安装
 
+### 从 JetBrains Marketplace 下载（推荐）
+
+**推荐方式**：我们建议优先从 JetBrains Marketplace 下载和安装插件，这是最便捷和安全的安装方式。
+
+1. **在线安装**：
+   - 打开您的 JetBrains IDE（IntelliJ IDEA、WebStorm、PyCharm 等）
+   - 转到 `设置/首选项` → `插件`
+   - 在 `Marketplace` 标签页中搜索 "RunVSAgent"
+   - 点击 `安装` 按钮
+   - 在提示时重启您的 IDE
+
+2. **验证安装**：重启后，您应该在 IDE 的插件列表中看到 RunVSAgent 插件
+
 ### 从 GitHub Releases 下载
 
 您可以从我们的 GitHub releases 页面下载预构建的插件：

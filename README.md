@@ -82,6 +82,19 @@ graph TB
 
 ## 📦 Installation
 
+### Download from JetBrains Marketplace (Recommended)
+
+**Recommended Method**: We recommend downloading and installing the plugin from JetBrains Marketplace first, as this is the most convenient and secure installation method.
+
+1. **Online Installation**:
+   - Open your JetBrains IDE (IntelliJ IDEA, WebStorm, PyCharm, etc.)
+   - Go to `Settings/Preferences` → `Plugins`
+   - Search for "RunVSAgent" in the `Marketplace` tab
+   - Click the `Install` button
+   - Restart your IDE when prompted
+
+2. **Verify Installation**: After restart, you should see the RunVSAgent plugin in your IDE's plugin list
+
 ### Download from GitHub Releases
 
 You can download the pre-built plugin from our GitHub releases page:
