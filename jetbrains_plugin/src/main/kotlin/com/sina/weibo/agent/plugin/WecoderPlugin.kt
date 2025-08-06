@@ -22,7 +22,11 @@ import java.util.concurrent.CompletableFuture
 import kotlinx.coroutines.*
 import java.util.Properties
 import java.io.InputStream
+import com.intellij.ide.plugins.PluginManagerCore
+import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.util.SystemInfo
+import com.intellij.ui.jcef.JBCefApp
+import com.intellij.openapi.application.ApplicationInfo
 import com.sina.weibo.agent.core.*
 import com.sina.weibo.agent.util.ExtensionUtils
 import com.sina.weibo.agent.util.PluginConstants
@@ -55,7 +59,20 @@ class WecoderPlugin : StartupActivity.DumbAware {
     }
 
     override fun runActivity(project: Project) {
-        LOG.info("Initializing WeCode plugin for project: ${project.name}")
+        val appInfo = ApplicationInfo.getInstance()
+        val plugin = PluginManagerCore.getPlugin(PluginId.getId(PluginConstants.PLUGIN_ID))
+        val pluginVersion = plugin?.version ?: "unknown"
+        val osName = System.getProperty("os.name")
+        val osVersion = System.getProperty("os.version")
+        val osArch = System.getProperty("os.arch")
+        
+        LOG.info(
+            "Initializing RunVSAgent plugin for project: ${project.name}, " +
+            "OS: $osName $osVersion ($osArch), " +
+            "IDE: ${appInfo.fullApplicationName} (build ${appInfo.build}), " +
+            "Plugin version: $pluginVersion, " +
+            "JCEF supported: ${JBCefApp.isSupported()}"
+        )
 
         try {
             // Initialize plugin service
@@ -68,14 +85,14 @@ class WecoderPlugin : StartupActivity.DumbAware {
             
             // Register project-level resource disposal
             Disposer.register(project, Disposable {
-                LOG.info("Disposing WeCode plugin for project: ${project.name}")
+                LOG.info("Disposing RunVSAgent plugin for project: ${project.name}")
                 pluginService.dispose()
                 SystemObjectProvider.dispose()
             })
             
-            LOG.info("WeCode plugin initialized successfully for project: ${project.name}")
+            LOG.info("RunVSAgent plugin initialized successfully for project: ${project.name}")
         } catch (e: Exception) {
-            LOG.error("Failed to initialize WeCode plugin", e)
+            LOG.error("Failed to initialize RunVSAgent plugin", e)
         }
     }
 }

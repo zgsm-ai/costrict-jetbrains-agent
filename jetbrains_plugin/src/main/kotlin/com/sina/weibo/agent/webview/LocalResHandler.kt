@@ -4,6 +4,7 @@
 
 package com.sina.weibo.agent.webview
 
+import com.intellij.openapi.diagnostic.Logger
 import io.ktor.http.*
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
@@ -26,6 +27,8 @@ class LocalResHandler(val resourcePath:String , val request: CefRequest?) : CefR
 }
 
 class LocalCefResHandle(val resourceBasePath: String, val request: CefRequest?) : CefResourceHandler{
+    private val logger = Logger.getInstance(LocalCefResHandle::class.java)
+
     private var file: File? = null
     private var fileContent: ByteArray? = null
     private var offset = 0
@@ -44,6 +47,7 @@ class LocalCefResHandle(val resourceBasePath: String, val request: CefRequest?) 
                 try {
                     fileContent = file!!.readBytes()
                 } catch (e: Exception) {
+                    logger.warn("cannot get fileContent,e:${e}")
                     file = null
                     fileContent = null
                 }
@@ -51,6 +55,7 @@ class LocalCefResHandle(val resourceBasePath: String, val request: CefRequest?) 
                 file = null
                 fileContent = null
             }
+            logger.info("init LocalCefResHandle,filePath:${filePath},file:${file},exists:${file!!.exists()}")
         }
     }
 

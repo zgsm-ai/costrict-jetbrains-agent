@@ -350,23 +350,23 @@ class WebViewManager(var project: Project) : Disposable, ThemeChangeListener {
                 if ( resourceRootDir != null) {
                     // Generate unique file name for WebView
                     val filename = "index.html"
-                    
+
                     // Save HTML content to file
                     saveHtmlToResourceDir(data.htmlContent, filename)
-                    
+
                     // Use HTTP URL to load WebView content
                     val url = "http://localhost:12345/$filename"
                     logger.info("Load WebView HTML content via HTTP: $url")
-                    
+
                     webView.loadUrl(url)
                 } else {
                     // Fallback to direct HTML loading
                     logger.warn("HTTP server not running or resource directory not set, loading HTML content directly")
                     webView.loadHtml(data.htmlContent)
                 }
-                
-                logger.info("WebView HTML content updated: handle=${data.handle}")
-                
+
+                    logger.info("WebView HTML content updated: handle=${data.handle}")
+
                 // If there is already a theme config, send it after content is loaded
                 if (currentThemeConfig != null) {
                     // Delay sending theme config to ensure HTML is loaded
@@ -490,7 +490,7 @@ class WebViewInstance(
     fun sendThemeConfigToWebView(themeConfig: JsonObject) {
         currentThemeConfig = themeConfig
         if(isDisposed or !isPageLoaded) {
-            logger.warn("WebView has been disposed or not loaded, cannot send theme config")
+            logger.warn("WebView has been disposed or not loaded, cannot send theme config:${isDisposed},${isPageLoaded}")
             return
         }
         injectTheme()
@@ -819,6 +819,7 @@ class WebViewInstance(
                     user_gesture: Boolean,
                     is_redirect: Boolean
                 ): Boolean {
+                    logger.info("onBeforeBrowse,url:${request?.url}")
                     if(request?.url?.startsWith("http://localhost") == false){
                         BrowserUtil.browse(request.url)
                         return true
@@ -835,6 +836,7 @@ class WebViewInstance(
                     requestInitiator: String?,
                     disableDefaultHandling: BoolRef?
                 ): CefResourceRequestHandler {
+                    logger.info("getResourceRequestHandler,fsPath:${fsPath}")
                     if (fsPath != null) {
                         // Set resource root directory
                         val path = Paths.get(fsPath)
