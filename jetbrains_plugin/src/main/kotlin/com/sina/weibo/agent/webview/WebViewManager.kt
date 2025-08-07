@@ -478,6 +478,9 @@ class WebViewInstance(
 
     private var currentThemeConfig: JsonObject? = null
     
+    // Callback for page load completion
+    private var pageLoadCallback: (() -> Unit)? = null
+    
     init {
         setupJSBridge()
         // Enable resource loading interception
@@ -496,6 +499,22 @@ class WebViewInstance(
         injectTheme()
     }
 
+    /**
+     * Check if page is loaded
+     * @return true if page is loaded, false otherwise
+     */
+    fun isPageLoaded(): Boolean {
+        return isPageLoaded
+    }
+    
+    /**
+     * Set callback for page load completion
+     * @param callback Callback function to be called when page is loaded
+     */
+    fun setPageLoadCallback(callback: (() -> Unit)?) {
+        pageLoadCallback = callback
+    }
+    
     private fun injectTheme() {
         if(currentThemeConfig == null) {
             return
@@ -799,6 +818,8 @@ class WebViewInstance(
                     logger.info("WebView finished loading: ${frame?.url}, status code: $httpStatusCode")
                     isPageLoaded = true
                     injectTheme()
+                    // Notify page load completion
+                    pageLoadCallback?.invoke()
                 }
                 
                 override fun onLoadError(

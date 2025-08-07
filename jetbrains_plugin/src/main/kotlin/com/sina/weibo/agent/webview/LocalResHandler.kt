@@ -55,7 +55,7 @@ class LocalCefResHandle(val resourceBasePath: String, val request: CefRequest?) 
                 file = null
                 fileContent = null
             }
-            logger.info("init LocalCefResHandle,filePath:${filePath},file:${file},exists:${file!!.exists()}")
+            logger.info("init LocalCefResHandle,filePath:${filePath},file:${file},exists:${file?.exists()}")
         }
     }
 

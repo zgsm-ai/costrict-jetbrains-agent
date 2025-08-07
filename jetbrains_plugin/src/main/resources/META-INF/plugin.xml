@@ -20,18 +20,66 @@ SPDX-License-Identifier: Apache-2.0
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-        <h1 id="wecoder-plugin-for-intellij-platform">Run VSCode Agent Plugin for IntelliJ Platform</h1>
-        <p>A whole dev team of AI agents in your editor.</p>
-        <br/>
-        <h2 id="requirements">Requirements</h2>
-        requires <a href="https://nodejs.org/">Node.js</a> v18+ installed. </p>
-  ]]></description>
+        <h1>RunVSAgent - Run VSCode-based Coding Agents in JetBrains IDEs</h1>
+        <p>RunVSAgent is an innovative cross-platform development tool that enables developers to run VSCode-based coding agents and extensions within JetBrains IDEs (IntelliJ IDEA, WebStorm, PyCharm, etc.) or other IDE platforms.</p>
+        
+        <h2>Core Features</h2>
+        <ul>
+            <li><strong>VSCode Agent Compatibility</strong>: Seamlessly run VSCode-based coding agents in JetBrains IDEs</li>
+            <li><strong>Cross-IDE Development</strong>: Unified agent experience across different IDE platforms</li>
+            <li><strong>AI-Powered Assistance</strong>: Leverage advanced AI coding assistants for intelligent code generation</li>
+        </ul>
+        
+        <h2>Supported IDEs</h2>
+        <p>RunVSAgent currently supports the following JetBrains IDE series:</p>
+        <ul>
+            <li><strong>IntelliJ IDEA</strong> (Ultimate & Community)</li>
+            <li><strong>WebStorm</strong> - JavaScript and TypeScript development</li>
+            <li><strong>PyCharm</strong> (Professional & Community) - Python development</li>
+            <li><strong>PhpStorm</strong> - PHP development</li>
+            <li><strong>RubyMine</strong> - Ruby development</li>
+            <li><strong>CLion</strong> - C/C++ development</li>
+            <li><strong>GoLand</strong> - Go development</li>
+            <li><strong>DataGrip</strong> - Database development</li>
+            <li><strong>Rider</strong> - .NET development</li>
+            <li><strong>Android Studio</strong> - Android development</li>
+        </ul>
+        
+        <h2>Supported Agents</h2>
+        <ul>
+            <li><strong>Roo Code</strong>: Advanced AI-powered coding assistant with intelligent code generation and refactoring capabilities</li>
+        </ul>
+        
+        <h2>Requirements</h2>
+        <ul>
+            <li>Requires <a href="https://nodejs.org/">Node.js</a> v18+ installed</li>
+            <li>Requires JetBrains IDE version 2023.1 or later for optimal compatibility</li>
+        </ul>
+        
+        <h2>Benefits</h2>
+        <ul>
+            <li><strong>Increased Productivity</strong>: Access powerful AI coding assistants without leaving your preferred IDE</li>
+            <li><strong>Unified Workflow</strong>: Maintain a consistent development experience across different platforms</li>
+            <li><strong>Extensible Architecture</strong>: Support for new agents and extensions as they become available</li>
+        </ul>
+        
+   ]]></description>
+   
+   <!-- Change notes for the plugin -->
+   <change-notes><![CDATA[
+        <h3>Version 0.1.4</h3>
+        <ul>
+            <li>Initial release with support for VSCode-based coding agents</li>
+            <li>Compatibility with JetBrains IDE 2023.1+</li>
+            <li>Support for Roo Code AI assistant</li>
+        </ul>
+   ]]></change-notes>
 
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
     <depends>org.jetbrains.plugins.terminal</depends>
-
+    
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
