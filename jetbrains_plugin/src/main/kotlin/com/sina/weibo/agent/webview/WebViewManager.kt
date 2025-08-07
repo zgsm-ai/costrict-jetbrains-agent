@@ -835,14 +835,14 @@ class WebViewInstance(
                     isDownload: Boolean,
                     requestInitiator: String?,
                     disableDefaultHandling: BoolRef?
-                ): CefResourceRequestHandler {
+                ): CefResourceRequestHandler? {
                     logger.info("getResourceRequestHandler,fsPath:${fsPath}")
-                    if (fsPath != null) {
+                    if (fsPath != null && request?.url?.contains("localhost")==true) {
                         // Set resource root directory
                         val path = Paths.get(fsPath)
                         return LocalResHandler(path.pathString,request)
                     }else{
-                        return super.getResourceRequestHandler(browser, frame, request, isNavigation, isDownload, requestInitiator, disableDefaultHandling)
+                        return null
                     }
 
                 }
