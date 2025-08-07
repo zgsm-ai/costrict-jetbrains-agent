@@ -181,6 +181,10 @@ RunVSAgent/
 - **Communication**: RPC over Unix Domain Sockets/Named Pipes
 - **Build Tools**: npm/pnpm, Gradle, Shell scripts
 
+### Known Issues
+
+For a list of known issues and common problems, please see [Known Issues](docs/KNOWN_ISSUES.md).
+
 ### Contributing
 
 1. Fork the repository

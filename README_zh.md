@@ -180,6 +180,10 @@ RunVSAgent/
 - **通信**：基于 Unix Domain Sockets/Named Pipes 的 RPC
 - **构建工具**：npm/pnpm、Gradle、Shell 脚本
 
+### 已知问题
+
+有关已知问题和常见问题的列表，请参见[已知问题](docs/KNOWN_ISSUES.md)。
+
 ### 贡献
 
 1. Fork 仓库
