@@ -67,10 +67,19 @@ SPDX-License-Identifier: Apache-2.0
    
    <!-- Change notes for the plugin -->
    <change-notes><![CDATA[
+        <h3>Version 0.1.5</h3>
+        <ul>
+            <li>Added system information display while webview is loading</li>
+            <li>Fixed issue where LocalResHandler attempted to load non-local resources</li>
+            <li>Enhanced logging for webview initialization process</li>
+            <li>Updated documentation and added known issues list</li>
+            <li>Improved README with star history and updated contributor information</li>
+        </ul>
+        
         <h3>Version 0.1.4</h3>
         <ul>
             <li>Initial release with support for VSCode-based coding agents</li>
-            <li>Compatibility with JetBrains IDE 2023.1+</li>
+            <li>Compatibility with JetBrains IDE 2023.1+</lit >
             <li>Support for Roo Code AI assistant</li>
         </ul>
    ]]></change-notes>
