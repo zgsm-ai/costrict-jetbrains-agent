@@ -5,6 +5,7 @@
 package com.sina.weibo.agent.editor
 
 import com.intellij.diff.DiffContentFactory
+import java.util.concurrent.ConcurrentHashMap
 import com.intellij.diff.chains.DiffRequestChain
 import com.intellij.diff.chains.SimpleDiffRequestChain
 import com.intellij.diff.contents.DiffContent
@@ -45,8 +46,8 @@ class EditorAndDocManager(val project: Project) : Disposable {
 
     private var state = DocumentsAndEditorsState()
     private var lastNotifiedState = DocumentsAndEditorsState()
-    private var editorHandles = mutableMapOf<String, EditorHolder>()
-    private val ideaOpenedEditor = mutableMapOf<String, Editor>()
+    private var editorHandles = ConcurrentHashMap<String, EditorHolder>()
+    private val ideaOpenedEditor = ConcurrentHashMap<String, Editor>()
     private var tabManager : TabStateManager = TabStateManager(project)
 
     private var job: Job? = null
@@ -450,8 +451,8 @@ class EditorAndDocManager(val project: Project) : Disposable {
     }
     private fun copy(state: DocumentsAndEditorsState): DocumentsAndEditorsState {
         val rst = DocumentsAndEditorsState(
-            editors = mutableMapOf(),
-            documents = mutableMapOf(),
+            editors = ConcurrentHashMap(),
+            documents = ConcurrentHashMap(),
             activeEditorId = state.activeEditorId
         )
         rst.editors.putAll(state.editors)
@@ -526,8 +527,8 @@ class EditorAndDocManager(val project: Project) : Disposable {
 
 
 data class DocumentsAndEditorsState (
-    var editors: MutableMap<String , TextEditorAddData> =  mutableMapOf(),
-    var documents: MutableMap<URI, ModelAddedData> =  mutableMapOf(),
+    var editors: MutableMap<String , TextEditorAddData> =  ConcurrentHashMap(),
+    var documents: MutableMap<URI, ModelAddedData> =  ConcurrentHashMap(),
     var activeEditorId: String? = null
 ){
 
