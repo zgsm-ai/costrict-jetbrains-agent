@@ -72,6 +72,7 @@ SPDX-License-Identifier: Apache-2.0
             <li>Added proxy support for extension host to enable usage in restricted network environments</li>
             <li>Fixed ConcurrentModificationException in EditorAndDocManager for improved stability</li>
             <li>Updated Roo Code version to 3.25.10 with latest AI coding assistant features</li>
+            <li>Fixed an intermittent issue where an extra “}” character would appear at the end of the file.</li>
         </ul>
         
         <h3>Version 0.1.5</h3>
