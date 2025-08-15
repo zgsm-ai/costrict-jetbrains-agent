@@ -137,21 +137,32 @@ object ProxyConfigUtil {
             return null
         }
         
-        return if (!proxyConfig.pacUrl.isNullOrEmpty()) {
+        val configMap = mutableMapOf<String, Any>()
+        
+        if (!proxyConfig.pacUrl.isNullOrEmpty()) {
             // For PAC proxy, set http.proxy to pacUrl
-            mapOf(
-                "proxy" to proxyConfig.pacUrl,
-                "proxySupport" to "on"
-            )
+            configMap["proxy"] = proxyConfig.pacUrl
+            configMap["proxySupport"] = "on"
         } else if (!proxyConfig.proxyUrl.isNullOrEmpty()) {
             // For HTTP proxy
-            mapOf(
-                "proxy" to proxyConfig.proxyUrl,
-                "proxySupport" to "on"
-            )
-        } else {
-            null
+            configMap["proxy"] = proxyConfig.proxyUrl
+            configMap["proxySupport"] = "on"
         }
+        
+        // Add noProxy configuration if proxyExceptions is not null or empty
+        if (!proxyConfig.proxyExceptions.isNullOrEmpty()) {
+            // Split proxyExceptions string by comma and trim each entry
+            val noProxyList = proxyConfig.proxyExceptions
+                .split(",")
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
+            
+            if (noProxyList.isNotEmpty()) {
+                configMap["noProxy"] = noProxyList
+            }
+        }
+        
+        return if (configMap.isNotEmpty()) configMap else null
     }
     
     /**
@@ -173,6 +184,11 @@ object ProxyConfigUtil {
             // For HTTP proxy, set HTTP_PROXY and HTTPS_PROXY environment variables
             envVars["HTTP_PROXY"] = proxyConfig.proxyUrl
             envVars["HTTPS_PROXY"] = proxyConfig.proxyUrl
+        }
+        
+        // Add NO_PROXY environment variable if proxyExceptions is not null or empty
+        if (!proxyConfig.proxyExceptions.isNullOrEmpty()) {
+            envVars["NO_PROXY"] = proxyConfig.proxyExceptions
         }
         
         return envVars
