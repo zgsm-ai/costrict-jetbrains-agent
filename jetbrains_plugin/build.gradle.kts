@@ -58,7 +58,7 @@ project.afterEvaluate {
 fun Sync.prepareSandbox() {
     // Set duplicate strategy to include files, with later sources taking precedence
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    
+
     if (ext.get("debugMode") == "idea") {
         from("${project.projectDir.absolutePath}/src/main/resources/themes/") {
             into("${ext.get("debugResource")}/${ext.get("vscodePlugin")}/src/integrations/theme/default-themes/")
@@ -86,7 +86,7 @@ fun Sync.prepareSandbox() {
 
         from("../extension_host/dist") { into("${intellij.pluginName.get()}/runtime/") }
         from("../extension_host/package.json") { into("${intellij.pluginName.get()}/runtime/") }
-        
+
         // First copy extension_host node_modules
         from("../extension_host/node_modules") {
             into("${intellij.pluginName.get()}/node_modules/")
@@ -97,7 +97,8 @@ fun Sync.prepareSandbox() {
 
         from("${vscodePluginDir.path}/extension") { into("${intellij.pluginName.get()}/${ext.get("vscodePlugin")}") }
         from("src/main/resources/themes/") { into("${intellij.pluginName.get()}/${ext.get("vscodePlugin")}/integrations/theme/default-themes/") }
-        
+        from("src/main/resources/themes/") { into("${intellij.pluginName.get()}/themes/") }
+
         // The platform.zip file required for release mode is associated with the code in ../base/vscode, currently using version 1.100.0. If upgrading this code later
         // Need to modify the vscodeVersion value in gradle.properties, then execute the task named genPlatform, which will generate a new platform.zip file for submission
         // To support new architectures, modify according to the logic in genPlatform.gradle script
@@ -234,7 +235,7 @@ detekt {
     config.setFrom(file("detekt.yml"))
     buildUponDefaultConfig = true
     allRules = false
-    
+
     reports {
         html.required.set(true)
         xml.required.set(true)

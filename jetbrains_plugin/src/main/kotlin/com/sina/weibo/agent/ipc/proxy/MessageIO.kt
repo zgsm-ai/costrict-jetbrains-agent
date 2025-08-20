@@ -6,6 +6,7 @@ package com.sina.weibo.agent.ipc.proxy
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.intellij.openapi.diagnostic.Logger
 import java.lang.Exception
 
  // Symbol name for buffer reference during serialization
@@ -211,7 +212,6 @@ object MessageIO {
             method = method.substring(1)
         }
         val argsJson = buff.readLongString()
-        
         val gson = Gson()
         val listType = object : TypeToken<List<Any?>>() {}.type
         val args = gson.fromJson<List<Any?>>(argsJson, listType)

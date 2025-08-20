@@ -32,9 +32,6 @@ class ExtensionProcessManager : Disposable {
         // Extension process entry file
         private const val EXTENSION_ENTRY_FILE = PluginConstants.EXTENSION_ENTRY_FILE
         
-        // Plugin code directory
-        private const val PLUGIN_CODE_DIR = PluginConstants.PLUGIN_CODE_DIR
-        
         // Runtime directory
         private const val RUNTIME_DIR = PluginConstants.RUNTIME_DIR
         
@@ -107,6 +104,12 @@ class ExtensionProcessManager : Disposable {
                 LOG.error("Failed to find extension entry file")
                 return false
             }
+
+            val nodeModulesPath = findNodeModulesPath()
+            if (nodeModulesPath == null) {
+                LOG.error("Failed to find node_modules directory")
+                return false
+            }
             
             LOG.info("Starting extension process with node: $nodePath, entry: $extensionPath")
 
@@ -161,7 +164,7 @@ class ExtensionProcessManager : Disposable {
                 LOG.info("  $key = $value")
             }
             builder.environment().putAll(envVars)
-            
+
             // Redirect error stream to standard output
             builder.redirectErrorStream(true)
             
@@ -326,7 +329,7 @@ class ExtensionProcessManager : Disposable {
     fun findExtensionEntryFile(): String? {
         // In debug mode, directly return debug-resources path
         if (WecoderPluginService.getDebugMode() != DEBUG_MODE.NONE) {
-            val debugEntry = java.nio.file.Paths.get(WecoderPluginService.getDebugResource(), RUNTIME_DIR, "src", EXTENSION_ENTRY_FILE).normalize().toFile()
+            val debugEntry = java.nio.file.Paths.get(WecoderPluginService.getDebugResource(), RUNTIME_DIR, EXTENSION_ENTRY_FILE).normalize().toFile()
             if (debugEntry.exists() && debugEntry.isFile) {
                 LOG.info("[DebugMode] Using debug entry file: ${debugEntry.absolutePath}")
                 return debugEntry.absolutePath
@@ -345,21 +348,7 @@ class ExtensionProcessManager : Disposable {
         return null
     }
     
-    /**
-     * Find plugin code directory
-     */
-    private fun findPluginCodeDir(): String? {
-        val pluginDirPath = PluginResourceUtil.getResourcePath(PLUGIN_ID, PLUGIN_CODE_DIR)
-        if (pluginDirPath != null) {
-            val pluginCodeDir = File(pluginDirPath)
-            if (pluginCodeDir.exists() && pluginCodeDir.isDirectory) {
-                return pluginCodeDir.absolutePath
-            }
-        }
-        
-        LOG.warn("Plugin code directory not found")
-        return null
-    }
+
     
     /**
      * Find node_modules path

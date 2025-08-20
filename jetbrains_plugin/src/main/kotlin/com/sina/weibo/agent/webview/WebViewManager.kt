@@ -278,7 +278,8 @@ class WebViewManager(var project: Project) : Disposable, ThemeChangeListener {
          */
     fun updateWebViewHtml(data: WebviewHtmlUpdateData) {
         val encodedState = getLatestWebView()?.state.toString().replace("\"", "\\\"")
-        val mRst = """<script\s+nonce="([A-Za-z0-9]{32})">""".toRegex().find(data.htmlContent)
+        // Support both <script nonce="..."> and <script type="text/javascript" nonce="..."> formats
+        val mRst = """<script(?:\s+type="text/javascript")?\s+nonce="([A-Za-z0-9]{32})">""".toRegex().find(data.htmlContent)
         val str = mRst?.value ?: ""
         data.htmlContent = data.htmlContent.replace(str,"""
                         ${str}
@@ -591,11 +592,14 @@ class WebViewInstance(
                                                 font-size: var(--vscode-font-size);
                                                 margin: 0;
                                                 padding: 0 20px;
+                                                overflow-x: hidden;   /* prevent horizontal scrollbar */
+                                                overflow-y: auto;     /* allow vertical scrolling only */
                                             }
                                             
                                             img, video {
                                                 max-width: 100%;
-                                                max-height: 100%;
+                                                height: auto;        /* keep aspect ratio and avoid vertical overflow */
+                                                display: block;      /* remove inline baseline gaps that can trigger overflow */
                                             }
                                             
                                             a, a code {
@@ -656,6 +660,9 @@ class WebViewInstance(
                                             ::-webkit-scrollbar-corner {
                                                 background-color: var(--vscode-editor-background);
                                             }
+                                            
+                                            *, *::before, *::after { box-sizing: border-box; }
+                                            html, body { width: 100%; height: 100%; }
                                             
                                             ::-webkit-scrollbar-thumb {
                                                 background-color: var(--vscode-scrollbarSlider-background);

@@ -48,6 +48,7 @@ SPDX-License-Identifier: Apache-2.0
         <h2>Supported Agents</h2>
         <ul>
             <li><strong>Roo Code</strong>: Advanced AI-powered coding assistant with intelligent code generation and refactoring capabilities</li>
+            <li><strong>Custom Extensions</strong>: Support for custom AI coding assistants</li>
         </ul>
         
         <h2>Requirements</h2>
@@ -73,7 +74,7 @@ SPDX-License-Identifier: Apache-2.0
             <li>Added support for no proxy configuration in restricted network environments</li>
             <li>Added support for @terminal for improved user experience</li>
         </ul>
-        
+
         <h3>Version 0.1.6</h3>
         <ul>
             <li>Added proxy support for extension host to enable usage in restricted network environments</li>
@@ -81,7 +82,7 @@ SPDX-License-Identifier: Apache-2.0
             <li>Updated Roo Code version to 3.25.10 with latest AI coding assistant features</li>
             <li>Fixed an intermittent issue where an extra "}" character would appear at the end of the file.</li>
         </ul>
-        
+
         <h3>Version 0.1.5</h3>
         <ul>
             <li>Added system information display while webview is loading</li>
@@ -105,7 +106,7 @@ SPDX-License-Identifier: Apache-2.0
         <projectService serviceImplementation="com.sina.weibo.agent.plugin.WecoderPluginService"/>
         <postStartupActivity implementation="com.sina.weibo.agent.plugin.WecoderPlugin"/>
         <editorFactoryListener implementation="com.sina.weibo.agent.editor.EditorListener"/>
-        <toolWindow factoryClass="com.sina.weibo.agent.ui.RooToolWindowFactory"
+        <toolWindow factoryClass="com.sina.weibo.agent.ui.RunVSAgentToolWindowFactory"
                     id="RunVSAgent"
                     secondary="true"
                     icon="/icons/wecoder-window.svg"
@@ -119,67 +120,59 @@ SPDX-License-Identifier: Apache-2.0
     </extensions>
 
     <actions>
-        <action id="RunVSAgent.plusButtonClicked"
-                icon="AllIcons.General.Add"
-                class="com.sina.weibo.agent.actions.PlusButtonClickAction"
-                text="New Task"
-                description="New task">
-            <override-text place="GoToAction" text="New Task" />
+        <action id="RunVSAgent.extensionSwitcher"
+                icon="AllIcons.Actions.Refresh"
+                class="com.sina.weibo.agent.extensions.ui.actions.ExtensionSwitcherAction"
+                text="Switch Extension Provider"
+                description="Switch to a different extension provider">
+            <override-text place="GoToAction" text="Switch Extension" />
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt S" />
         </action>
 
-        <action id="RunVSAgent.promptsButtonClicked"
-                icon="AllIcons.General.Information"
-                class="com.sina.weibo.agent.actions.PromptsButtonClickAction"
-                text="Prompt"
-                description="Prompts">
-            <override-text place="GoToAction" text="Prompts" />
-        </action>
 
-        <action id="RunVSAgent.mcpButtonClicked"
-                icon="AllIcons.Webreferences.Server"
-                class="com.sina.weibo.agent.actions.MCPButtonClickAction"
-                text="MCP Server"
-                description="MCP server">
-            <override-text place="GoToAction" text="MCP Server" />
-        </action>
-
-        <action id="RunVSAgent.historyButtonClicked"
-                icon="AllIcons.Vcs.History"
-                class="com.sina.weibo.agent.actions.HistoryButtonClickAction"
-                text="History"
-                description="History">
-            <override-text place="GoToAction" text="History" />
-        </action>
-
-        <action id="RunVSAgent.marketplaceButtonClicked"
-                icon="AllIcons.Actions.Install"
-                class="com.sina.weibo.agent.actions.MarketplaceButtonClickAction"
-                text="MCP Marketplace"
-                description="Marketplace">
-            <override-text place="GoToAction" text="Marketplace" />
-        </action>
-
-        <action id="RunVSAgent.settingsButtonClicked"
-                icon="AllIcons.General.Settings"
-                class="com.sina.weibo.agent.actions.SettingsButtonClickAction"
-                text="Settings"
-                description="Setting">
-            <override-text place="GoToAction" text="Setting" />
-        </action>
-
+        <!-- Dynamic toolbar group - buttons will be populated based on current extension -->
         <group id="WecoderToolbarGroup">
-            <reference ref="RunVSAgent.plusButtonClicked" />
-            <reference ref="RunVSAgent.promptsButtonClicked" />
-            <reference ref="RunVSAgent.mcpButtonClicked" />
-            <reference ref="RunVSAgent.historyButtonClicked" />
-            <reference ref="RunVSAgent.marketplaceButtonClicked" />
-            <reference ref="RunVSAgent.settingsButtonClicked" />
+            <group id="RunVSAgent.DynamicExtensionActions"
+                   class="com.sina.weibo.agent.extensions.ui.actions.DynamicExtensionActionsGroup"
+                   text="Extension Actions"
+                   description="Dynamic extension-specific actions" />
+            <reference ref="RunVSAgent.extensionSwitcher" />
+            <action id="RunVSAgent.extensionStatusChecker"
+                    icon="AllIcons.General.InspectionsOK"
+                    class="com.sina.weibo.agent.extensions.ui.actions.ExtensionStatusChecker"
+                    text="Check Extension Status"
+                    description="Check extension status and diagnose issues" />
         </group>
 
         <group id="RunVSAgent.RightClickMenu" text="RunVSAgent" description="RunVSAgent main menu"  icon="/icons/weibo_logo_13px.svg" popup="true">
             <group id="RunVSAgent.RightClick.Chat" class="com.sina.weibo.agent.actions.RightClickChatActionGroup"
                    text="Chat" description="RunVSAgent chat tool"/>
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </group>
+
+        <!-- Right-click menu for extension switching -->
+        <group id="RunVSAgent.RightClick.Extensions" text="Extensions" description="Extension management">
+            <reference ref="RunVSAgent.extensionSwitcher" />
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </group>
+
+        <!-- Right-click menu for extension-specific actions -->
+        <group id="RunVSAgent.RightClick.ExtensionActions" text="Extension Actions" description="Extension-specific actions">
+            <group id="RunVSAgent.RightClick.DynamicExtensionActions"
+                   class="com.sina.weibo.agent.extensions.ui.actions.DynamicExtensionActionsGroup"
+                   text="Extension Actions"
+                   description="Dynamic extension-specific actions" />
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </group>
+
+        <!-- Main menu integration -->
+        <group id="RunVSAgent.MainMenu" text="RunVSAgent" description="RunVSAgent main menu">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <reference ref="RunVSAgent.extensionSwitcher" />
+            <group id="RunVSAgent.MainMenu.DynamicExtensionActions"
+                   class="com.sina.weibo.agent.extensions.ui.actions.DynamicExtensionActionsGroup"
+                   text="Extension Actions"
+                   description="Dynamic extension-specific actions" />
         </group>
     </actions>
 </idea-plugin>

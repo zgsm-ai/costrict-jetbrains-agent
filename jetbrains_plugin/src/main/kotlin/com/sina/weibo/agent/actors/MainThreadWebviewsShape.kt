@@ -7,11 +7,8 @@ package com.sina.weibo.agent.actors
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.ProjectManager
-import com.sina.weibo.agent.events.EventBus
-import com.sina.weibo.agent.events.ProjectEventBus
 import com.sina.weibo.agent.events.WebviewHtmlUpdateData
-import com.sina.weibo.agent.events.WebviewHtmlUpdateEvent
+import com.sina.weibo.agent.extensions.core.ExtensionManager
 import com.sina.weibo.agent.webview.WebViewManager
 import java.util.concurrent.ConcurrentHashMap
 
@@ -67,8 +64,11 @@ class MainThreadWebviews(val project: Project) : MainThreadWebviewsShape {
         logger.info("Setting Webview HTML: handle=$handle, length=${value.length}")
         webviewHandle = handle
         try {
-            // Replace vscode-file protocol format, using regex to match from vscode-file:/ to /roo-code/ part
-            val modifiedHtml = value.replace(Regex("vscode-file:/.*?/roo-code/"), "/")
+                    // Replace vscode-file protocol format, using regex to match from vscode-file:/ to extension directory part
+        val extensionManager = ExtensionManager.getInstance(project)
+        val currentProvider = extensionManager.getCurrentProvider()
+        val extensionDir = currentProvider?.getConfiguration(project)?.getCodeDir() ?: "unknown-extension"
+        val modifiedHtml = value.replace(Regex("vscode-file:/.*?/$extensionDir/"), "/")
             logger.info("Replaced vscode-file protocol path format")
             
             // Send HTML content update event through EventBus
