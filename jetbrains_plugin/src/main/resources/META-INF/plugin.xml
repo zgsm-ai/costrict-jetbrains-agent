@@ -68,30 +68,12 @@ SPDX-License-Identifier: Apache-2.0
    
    <!-- Change notes for the plugin -->
    <change-notes><![CDATA[
-        <h3>Version 0.1.7</h3>
+        <h3>Version 0.2.0</h3>
         <ul>
-            <li>Updated Roo Code version to 3.25.15 with latest AI coding assistant features</li>
-            <li>Added support for no proxy configuration in restricted network environments</li>
-            <li>Added support for @terminal for improved user experience</li>
+            <li>Support the Cline plugin and allow switching between multiple plugins.</li>
+            <li>Important: The storage path has changed in the new version. Therefore, before upgrading, please use Roo Code’s Export Settings feature to back up your settings.</li>
         </ul>
 
-        <h3>Version 0.1.6</h3>
-        <ul>
-            <li>Added proxy support for extension host to enable usage in restricted network environments</li>
-            <li>Fixed ConcurrentModificationException in EditorAndDocManager for improved stability</li>
-            <li>Updated Roo Code version to 3.25.10 with latest AI coding assistant features</li>
-            <li>Fixed an intermittent issue where an extra "}" character would appear at the end of the file.</li>
-        </ul>
-
-        <h3>Version 0.1.5</h3>
-        <ul>
-            <li>Added system information display while webview is loading</li>
-            <li>Fixed issue where LocalResHandler attempted to load non-local resources</li>
-            <li>Enhanced logging for webview initialization process</li>
-            <li>Updated documentation and added known issues list</li>
-            <li>Improved README with star history and updated contributor information</li>
-        </ul>
-        
 
    ]]></change-notes>
 
