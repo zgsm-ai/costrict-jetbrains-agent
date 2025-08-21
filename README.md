@@ -43,6 +43,7 @@ Working on it...
 ## 🤖 Supported Agents
 
 - **[Roo Code](https://roocode.com)**: Advanced AI-powered coding assistant with intelligent code generation and refactoring capabilities
+- **[Cline](https://cline.bot)**: Autonomous coding agent right in your IDE, capable of creating/editing files, executing commands, using the browser, and more with your permission every step of the way.
 
 ## 🏗️ Architecture
 
@@ -209,6 +210,7 @@ We thank all the contributors who have helped make this project better:
 ### 🚀 Contributors
 
 - [junbaor](https://github.com/junbaor)
+- [aheizi](https://github.com/aheizi)
 
 ### License
 
