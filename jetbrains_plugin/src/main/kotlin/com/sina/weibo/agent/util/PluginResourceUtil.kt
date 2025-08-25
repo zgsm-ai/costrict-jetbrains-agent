@@ -32,7 +32,7 @@ object PluginResourceUtil {
      */
     fun getResourcePath(pluginId: String, resourceName: String): String? {
         return try {
-            if(WecoderPluginService.getDebugMode() != DEBUG_MODE.NONE) {
+            if(WecoderPluginService.getDebugMode() == DEBUG_MODE.IDEA) {
                 // Debug mode: directly use plugin service to get resource path
                 return WecoderPluginService.getDebugResource() + "/$resourceName"
             }
@@ -81,12 +81,10 @@ object PluginResourceUtil {
      * Check whether it is in development mode
      */
     private fun checkDevMode(plugin: IdeaPluginDescriptor): Boolean {
-        try {
-            val isSandbox = System.getProperty("idea.plugins.path")?.contains("idea-sandbox") ?: false
-            val devResourcePath = Paths.get(plugin.pluginPath.parent.parent.parent.parent.parent.pathString, "debug-resources")
-            return isSandbox && Files.exists(devResourcePath)
+        return try {
+            WecoderPluginService.getDebugMode() != DEBUG_MODE.NONE
         }catch (e: Exception){
-            return false
+            false
         }
     }
 
