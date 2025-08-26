@@ -8,11 +8,16 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.Messages
+import java.awt.datatransfer.StringSelection
+import javax.swing.*
 import com.sina.weibo.agent.extensions.core.ExtensionManager
 import com.sina.weibo.agent.core.PluginContext
 import com.sina.weibo.agent.core.ServiceProxyRegistry
+import com.sina.weibo.agent.util.ProxyConfigUtil
 import com.sina.weibo.agent.webview.WebViewManager
 
 /**
@@ -100,10 +105,83 @@ class ExtensionStatusChecker : AnAction("Check Extension Status") {
             sb.appendLine("\n❌ WebView Status Error: ${e.message}")
         }
         
+        // Check Proxy status
+        try {
+            val proxyConfig = ProxyConfigUtil.getProxyConfig()
+            sb.appendLine("\n🌐 Proxy Status:")
+            
+            val sourceDescription = when (proxyConfig.source) {
+                "ide-pac" -> "IDE Settings (PAC)"
+                "ide-http" -> "IDE Settings (HTTP Proxy)"
+                "ide-none" -> "IDE Settings (No Proxy)"
+                "env" -> "Environment Variables"
+                "none" -> "No Proxy Configuration"
+                "ide-error" -> "IDE Settings (Error)"
+                "env-error" -> "Environment Variables (Error)"
+                else -> proxyConfig.source
+            }
+            sb.appendLine("  Source: $sourceDescription")
+            
+            if (proxyConfig.hasProxy) {
+                if (!proxyConfig.pacUrl.isNullOrEmpty()) {
+                    sb.appendLine("  PAC URL: ${proxyConfig.pacUrl}")
+                } else if (!proxyConfig.proxyUrl.isNullOrEmpty()) {
+                    sb.appendLine("  Proxy URL: ${proxyConfig.proxyUrl}")
+                }
+                
+                if (!proxyConfig.proxyExceptions.isNullOrEmpty()) {
+                    sb.appendLine(" No Proxy For: ${proxyConfig.proxyExceptions}")
+                }
+            } else {
+                sb.appendLine("  No proxy configuration found")
+            }
+        } catch (e: Exception) {
+            sb.appendLine("\n❌ Proxy Status Error: ${e.message}")
+        }
+        
         return sb.toString()
     }
     
     private fun showStatusDialog(status: String) {
-        Messages.showInfoMessage(status, "Extension Status")
+        val dialog = ExtensionStatusDialog(status)
+        dialog.show()
+    }
+    
+    private class ExtensionStatusDialog(private val statusText: String) : DialogWrapper(true) {
+        
+        init {
+            title = "Extension Status"
+            init()
+        }
+        
+        override fun createCenterPanel(): JComponent {
+            val panel = JPanel()
+            panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
+            
+            val textArea = JTextArea(statusText)
+            textArea.isEditable = false
+            textArea.font = JLabel().font
+            textArea.background = JLabel().background
+            
+            val scrollPane = JScrollPane(textArea)
+            scrollPane.preferredSize = java.awt.Dimension(600, 400)
+            scrollPane.verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
+            scrollPane.horizontalScrollBarPolicy = JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
+            
+            panel.add(scrollPane)
+            return panel
+        }
+        
+        override fun createActions(): Array<Action> {
+            val copyAction = object : AbstractAction("Copy to Clipboard") {
+                override fun actionPerformed(e: java.awt.event.ActionEvent?) {
+                    val selection = StringSelection(statusText)
+                    CopyPasteManager.getInstance().setContents(selection)
+                    Messages.showInfoMessage("Status information copied to clipboard!", "Copied")
+                }
+            }
+            
+            return arrayOf(copyAction, okAction)
+        }
     }
 }
