@@ -81,7 +81,7 @@ class WorkspaceFileChangeManager(val project: Project) : Disposable {
      * @param newPath New workspace directory path
      */
     private fun triggerWorkspaceRootChangeEvent(project: Project, oldPath: String?, newPath: String) {
-        logger.info("Trigger workspace root change event: ${project.name}, old path: $oldPath, new path: $newPath")
+        logger.debug("Trigger workspace root change event: ${project.name}, old path: $oldPath, new path: $newPath")
         
         // Create workspace root change data
         val workspaceChangeData = WorkspaceRootChangeData(project, oldPath, newPath)
@@ -97,7 +97,7 @@ class WorkspaceFileChangeManager(val project: Project) : Disposable {
 
         extHostWorkspace?.let {
             if(workspaceData != null) {
-                logger.info("Send workspace root change to extension process: ${workspaceData.name}, folders: ${workspaceData.folders.size}")
+                logger.debug("Send workspace root change to extension process: ${workspaceData.name}, folders: ${workspaceData.folders.size}")
                 it.acceptWorkspaceData(workspaceData)
             }
         }
@@ -218,7 +218,7 @@ class WorkspaceFileChangeManager(val project: Project) : Disposable {
      * @param fileChangeData File change data
      */
     private fun triggerFileChangeEvent(fileChangeData: WorkspaceFileChangeData) {
-        logger.info("File changed: ${fileChangeData.file.path}, type: ${fileChangeData.changeType}")
+        logger.debug("File changed: ${fileChangeData.file.path}, type: ${fileChangeData.changeType}")
 
         // Send single file change event via EventBus
         project.getService(ProjectEventBus::class.java).emitInApplication(WorkspaceFileChangeEvent, fileChangeData)
@@ -229,7 +229,7 @@ class WorkspaceFileChangeManager(val project: Project) : Disposable {
      * @param directoryChangeData Directory change data
      */
     private fun triggerDirectoryChangeEvent(directoryChangeData: WorkspaceFileChangeData) {
-        logger.info("Directory changed: ${directoryChangeData.file.path}, type: ${directoryChangeData.changeType}")
+        logger.debug("Directory changed: ${directoryChangeData.file.path}, type: ${directoryChangeData.changeType}")
 
         // Send single directory change event via EventBus
         project.getService(ProjectEventBus::class.java).emitInApplication(WorkspaceDirectoryChangeEvent, directoryChangeData)
@@ -240,7 +240,7 @@ class WorkspaceFileChangeManager(val project: Project) : Disposable {
      * @param fileChanges List of file changes
      */
     private fun triggerBulkFileChangeEvent(fileChanges: List<WorkspaceFileChangeData>, project: Project) {
-        logger.info("Bulk file change, total ${fileChanges.size} files")
+        logger.debug("Bulk file change, total ${fileChanges.size} files")
 
         val proxy = PluginContext.getInstance(project).getRPCProtocol()?.getProxy(ServiceProxyRegistry.ExtHostContext.ExtHostFileSystemEventService)
         proxy?.let {
@@ -281,7 +281,7 @@ class WorkspaceFileChangeManager(val project: Project) : Disposable {
      * @param directoryChanges List of directory changes
      */
     private fun triggerBulkDirectoryChangeEvent(directoryChanges: List<WorkspaceFileChangeData>, project: Project) {
-        logger.info("Bulk directory change, total ${directoryChanges.size} directories")
+        logger.debug("Bulk directory change, total ${directoryChanges.size} directories")
 
         val proxy = PluginContext.getInstance(project).getRPCProtocol()?.getProxy(ServiceProxyRegistry.ExtHostContext.ExtHostFileSystemEventService)
         proxy?.let {

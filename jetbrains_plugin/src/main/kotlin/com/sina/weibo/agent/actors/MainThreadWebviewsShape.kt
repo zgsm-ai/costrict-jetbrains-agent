@@ -95,7 +95,7 @@ class MainThreadWebviews(val project: Project) : MainThreadWebviewsShape {
     override fun postMessage(handle: WebviewHandle, value: String): Boolean {
 //        logger.info("Sending message to Webview: handle=$handle")
         if(value.contains("theme")) {
-            logger.info("Sending theme message to Webview")
+            logger.debug("Sending theme message to Webview")
         }
 
         return try {

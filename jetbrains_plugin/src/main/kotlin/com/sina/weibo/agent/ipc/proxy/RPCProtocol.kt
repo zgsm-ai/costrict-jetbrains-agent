@@ -206,7 +206,7 @@ class RPCProtocol(
            // This is the first request we've sent in a while
            // Mark this moment as the start of the unresponsive countdown
            unresponsiveTime = System.currentTimeMillis() + UNRESPONSIVE_TIME
-           LOG.info("Set initial unresponsive check time, request ID: $req, unresponsive time: ${unresponsiveTime}ms")
+           LOG.debug("Set initial unresponsive check time, request ID: $req, unresponsive time: ${unresponsiveTime}ms")
         }
         unacknowledgedCount++
 
@@ -414,7 +414,7 @@ class RPCProtocol(
         if (isDisposed) {
             throw CanceledException()
         }
-        LOG.info("remoteCall: $rpcId.$methodName.${lastMessageId+1}")
+        LOG.debug("remoteCall: $rpcId.$methodName.${lastMessageId+1}")
 
         // Check if the last argument is a cancellation token
         var cancellationToken: Any? = null
@@ -480,7 +480,7 @@ class RPCProtocol(
         val messageType = MessageType.fromValue(buff.readUInt8()) ?: return
         val req = buff.readUInt32()
 
-        LOG.info("receiveOneMessage: $messageType, req: $req, length: $msgLength")
+        LOG.debug("receiveOneMessage: $messageType, req: $req, length: $msgLength")
         when (messageType) {
             MessageType.RequestJSONArgs, MessageType.RequestJSONArgsWithCancellation -> {
                 val (rpcId, method, args) = MessageIO.deserializeRequestJSONArgs(buff)
@@ -555,7 +555,7 @@ class RPCProtocol(
         args: List<Any?>,
         usesCancellationToken: Boolean
     ) {
-        LOG.info("receiveRequest:$req.$rpcId.$method()")
+        LOG.debug("receiveRequest:$req.$rpcId.$method()")
         logger?.logIncoming(
             msgLength,
             req,
