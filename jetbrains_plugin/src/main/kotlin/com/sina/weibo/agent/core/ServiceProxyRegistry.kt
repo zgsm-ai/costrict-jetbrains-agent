@@ -228,7 +228,7 @@ class ServiceProxyRegistry private constructor() {
         val MainThreadProgress = createProxyIdentifier<Any>("MainThreadProgress")
         val MainThreadQuickDiff = createProxyIdentifier<Any>("MainThreadQuickDiff")
         val MainThreadQuickOpen = createProxyIdentifier<Any>("MainThreadQuickOpen")
-        val MainThreadStatusBar = createProxyIdentifier<Any>("MainThreadStatusBar")
+        val MainThreadStatusBar = createProxyIdentifier<MainThreadStatusBarShape>("MainThreadStatusBar")
         val MainThreadSecretState = createProxyIdentifier<MainThreadSecretStateShape>("MainThreadSecretState")
         val MainThreadStorage = createProxyIdentifier<MainThreadStorageShape>("MainThreadStorage")
         val MainThreadSpeech = createProxyIdentifier<Any>("MainThreadSpeechProvider")
