@@ -34,8 +34,10 @@ class RPCManager(
         setupExtensionRequiredProtocols()
         setupWeCodeRequiredProtocols()
         setupRooCodeFuncitonProtocols()
+        setupKiloCodeFunctionProtocols()
         setupWebviewProtocols()
     }
+
 
     /**
      * Start initializing plugin environment
@@ -141,6 +143,7 @@ class RPCManager(
 
         // MainThreadConfiguration
         rpcProtocol.set(ServiceProxyRegistry.MainContext.MainThreadConfiguration, MainThreadConfiguration())
+
     }
 
     /**
@@ -191,6 +194,7 @@ class RPCManager(
 
         //MainThreadDocuments
         rpcProtocol.set(ServiceProxyRegistry.MainContext.MainThreadDocuments, MainThreadDocuments(project))
+
     }
 
     /**
@@ -241,6 +245,10 @@ class RPCManager(
 
         // MainThreadSecretState
         rpcProtocol.set(ServiceProxyRegistry.MainContext.MainThreadSecretState, MainThreadSecretState())
+    }
+    private fun setupKiloCodeFunctionProtocols() {
+        // MainThreadStatusBar
+        rpcProtocol.set(ServiceProxyRegistry.MainContext.MainThreadStatusBar, MainThreadStatusBar())
     }
 
     private fun setupWebviewProtocols() {

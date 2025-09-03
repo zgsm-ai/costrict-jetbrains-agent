@@ -36,7 +36,7 @@ interface MainThreadLanguageFeaturesShape : Disposable {
      * @param selector Document selector
      * @param eventHandle Event handle
      */
-    fun registerCodeLensSupport(handle: Int, selector: List<Map<String, Any?>>, eventHandle: Int?)
+    fun registerCodeLensSupport(handle: Number, selector: List<Map<String, Any?>>, eventHandle: Number?)
 
     /**
      * Emits code lens event.
@@ -459,7 +459,7 @@ class MainThreadLanguageFeatures : MainThreadLanguageFeaturesShape {
         logger.info("Registering document symbol provider: handle=$handle, selector=$selector, label=$label")
     }
 
-    override fun registerCodeLensSupport(handle: Int, selector: List<Map<String, Any?>>, eventHandle: Int?) {
+    override fun registerCodeLensSupport(handle: Number, selector: List<Map<String, Any?>>, eventHandle: Number?) {
         logger.info("Registering code lens support: handle=$handle, selector=$selector, eventHandle=$eventHandle")
     }
 

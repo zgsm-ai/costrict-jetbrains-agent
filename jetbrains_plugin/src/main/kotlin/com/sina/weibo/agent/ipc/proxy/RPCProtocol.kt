@@ -680,7 +680,11 @@ class RPCProtocol(
      * Execute handler invocation
      */
     private suspend fun doInvokeHandler(rpcId: Int, methodName: String, args: List<Any?>): Any? {
-        val actor = locals[rpcId] ?: throw IllegalStateException("Unknown actor ${getStringIdentifierForProxy(rpcId)}")
+        val actor = locals[rpcId]
+        if(actor == null) {
+            LOG.error("Unknown actor ${getStringIdentifierForProxy(rpcId)}")
+            return  null
+        }
        // Use reflection to get method with parameter type matching
        val method = try {
            findBestMatchingMethod(actor, methodName, args)
