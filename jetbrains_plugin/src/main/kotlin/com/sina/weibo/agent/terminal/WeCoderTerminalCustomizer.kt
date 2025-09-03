@@ -168,7 +168,14 @@ class WeCoderTerminalCustomizer : LocalTerminalCustomizer() {
     val userZdotdir = envs["ZDOTDIR"]
       ?: System.getenv("ZDOTDIR")
       ?: System.getProperty("user.home")
-    
+
+    // 🔧 Protect the JETBRAINS_INTELLIJ_ZSH_DIR environment variable to prevent it from being cleared.
+    val jetbrainsZshDir = envs["JETBRAINS_INTELLIJ_ZSH_DIR"] ?: System.getenv("JETBRAINS_INTELLIJ_ZSH_DIR")
+    if (jetbrainsZshDir != null) {
+      envs["JETBRAINS_INTELLIJ_ZSH_DIR"] = jetbrainsZshDir
+      logger.info("🔧 Preserved JETBRAINS_INTELLIJ_ZSH_DIR: $jetbrainsZshDir")
+    }
+
     envs["USER_ZDOTDIR"] = userZdotdir
     envs["ZDOTDIR"] = scriptPath
     
