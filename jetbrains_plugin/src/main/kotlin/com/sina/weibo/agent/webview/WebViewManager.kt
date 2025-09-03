@@ -792,7 +792,7 @@ class WebViewInstance(
                     source: String?,
                     line: Int
                 ): Boolean {
-                    logger.info("WebView console message: [$level] $message (line: $line, source: $source)")
+                    logger.debug("WebView console message: [$level] $message (line: $line, source: $source)")
                     return true
                 }
             }, browser.cefBrowser)
@@ -864,7 +864,7 @@ class WebViewInstance(
                     requestInitiator: String?,
                     disableDefaultHandling: BoolRef?
                 ): CefResourceRequestHandler? {
-                    logger.info("getResourceRequestHandler,fsPath:${fsPath}")
+                    logger.debug("getResourceRequestHandler,fsPath:${fsPath}")
                     if (fsPath != null && request?.url?.contains("localhost")==true) {
                         // Set resource root directory
                         val path = Paths.get(fsPath)
@@ -910,7 +910,7 @@ class WebViewInstance(
          */
     fun executeJavaScript(script: String) {
         if (!isDisposed) {
-            logger.info("WebView executing JavaScript, script length: ${script.length}")
+            logger.debug("WebView executing JavaScript, script length: ${script.length}")
             browser.cefBrowser.executeJavaScript(script, browser.cefBrowser.url, 0)
         }
     }
