@@ -61,7 +61,7 @@ object ProxyConfigUtil {
             val proxyConfig = HttpConfigurable.getInstance()
             
             // Check PAC proxy
-            if (proxyConfig.USE_PAC_URL) {
+            if (proxyConfig.USE_PROXY_PAC) {
                 val pacUrl = proxyConfig.PAC_URL
                 if (!pacUrl.isNullOrEmpty()) {
                     return ProxyConfig(null, null, pacUrl, "ide-pac")
