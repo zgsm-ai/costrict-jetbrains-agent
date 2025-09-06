@@ -11,6 +11,7 @@ import com.sina.weibo.agent.extensions.core.ExtensionManager
 import com.sina.weibo.agent.extensions.plugin.cline.ClineContextMenuProvider
 import com.sina.weibo.agent.extensions.plugin.roo.RooCodeContextMenuProvider
 import com.sina.weibo.agent.extensions.plugin.kilo.KiloCodeContextMenuProvider
+import com.sina.weibo.agent.extensions.plugin.costrict.CostrictCodeContextMenuProvider
 
 /**
  * Dynamic context menu manager that controls which context menu actions are available
@@ -101,6 +102,7 @@ class DynamicContextMenuManager(private val project: Project) {
             "roo-code" -> RooCodeContextMenuProvider()
             "cline" -> ClineContextMenuProvider()
             "kilo-code" -> KiloCodeContextMenuProvider()
+            "costrict" -> CostrictCodeContextMenuProvider()
             // TODO: Add other context menu providers as they are implemented
             // "copilot" -> CopilotContextMenuProvider()
             // "claude" -> ClaudeContextMenuProvider()

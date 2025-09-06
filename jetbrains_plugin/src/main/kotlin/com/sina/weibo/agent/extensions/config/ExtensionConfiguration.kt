@@ -194,6 +194,19 @@ data class ExtensionConfig(
                     capabilities = emptyMap(),
                     extensionDependencies = emptyList()
                 )
+                ExtensionType.COSTRICT -> ExtensionConfig(
+                    extensionType = extensionType,
+                    codeDir = "costrict",
+                    displayName = "Costrict",
+                    description = "AI-powered code assistant with advanced capabilities",
+                    publisher = "zgsm-ai",
+                    version = "1.6.5",
+                    mainFile = "./dist/extension.js",
+                    activationEvents = listOf("onStartupFinished"),
+                    engines = mapOf("vscode" to "^1.0.0"),
+                    capabilities = emptyMap(),
+                    extensionDependencies = emptyList()
+                )
             }
         }
         
