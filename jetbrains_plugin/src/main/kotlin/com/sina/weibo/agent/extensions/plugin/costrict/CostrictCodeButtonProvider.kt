@@ -40,7 +40,8 @@ class CostrictCodeButtonProvider : ExtensionButtonProvider {
             MCPButtonClickAction(),
             HistoryButtonClickAction(),
             MarketplaceButtonClickAction(),
-            SettingsButtonClickAction()
+            SettingsButtonClickAction(),
+            AccountButtonClickAction(),
         )
     }
     
@@ -107,6 +108,27 @@ class CostrictCodeButtonProvider : ExtensionButtonProvider {
          */
         override fun actionPerformed(e: AnActionEvent) {
             logger.info("Prompts button clicked")
+            executeCommand(commandId, e.project)
+        }
+    }
+
+    class AccountButtonClickAction : AnAction() {
+        private val logger: Logger = Logger.getInstance(AccountButtonClickAction::class.java)
+        private val commandId: String = "zgsm.cloudButtonClicked"
+
+        init {
+            templatePresentation.icon = AllIcons.General.User
+            templatePresentation.text = "Account"
+            templatePresentation.description = "Account"
+        }
+
+        /**
+         * Performs the action when the MCP button is clicked.
+         *
+         * @param e The action event containing context information
+         */
+        override fun actionPerformed(e: AnActionEvent) {
+            logger.info("Account clicked")
             executeCommand(commandId, e.project)
         }
     }
