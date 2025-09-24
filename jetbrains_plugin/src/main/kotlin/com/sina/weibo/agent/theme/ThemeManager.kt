@@ -15,6 +15,7 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.Disposer
 import com.intellij.util.messages.MessageBusConnection
+import com.sina.weibo.agent.core.ServiceProxyRegistry
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -64,7 +65,7 @@ class ThemeManager : Disposable {
 
     // JSON serialization
     private val gson = Gson()
-    
+
     /**
      * Initialize theme manager
      * @param resourceRoot Theme resource root directory
