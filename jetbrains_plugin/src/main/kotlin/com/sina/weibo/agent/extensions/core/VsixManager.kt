@@ -6,6 +6,7 @@ package com.sina.weibo.agent.extensions.core
 
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
+import com.sina.weibo.agent.theme.ThemeManager.Companion.getDefaultThemeResourceDir
 import com.sina.weibo.agent.theme.ThemeManager.Companion.getThemeResourceDir
 import com.sina.weibo.agent.util.PluginConstants.ConfigFiles.getUserConfigDir
 import java.io.File
@@ -276,10 +277,10 @@ class VsixManager {
                 return
             }
 
-            val integrationsThemeDir = getThemeResourceDir(extensionDir)
+            var integrationsThemeDir = getThemeResourceDir(extensionDir)
             if (integrationsThemeDir == null) {
-                LOG.warn("Plugin themes directory not found, skipping themes copy")
-                return
+                integrationsThemeDir = getDefaultThemeResourceDir(extensionDir)
+                LOG.warn("Plugin themes directory not found, mkdir")
             }
             
             // Create integrations theme directory
