@@ -15,6 +15,7 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.Disposer
 import com.intellij.util.messages.MessageBusConnection
+import com.sina.weibo.agent.core.ServiceProxyRegistry
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -64,7 +65,7 @@ class ThemeManager : Disposable {
 
     // JSON serialization
     private val gson = Gson()
-    
+
     /**
      * Initialize theme manager
      * @param resourceRoot Theme resource root directory
@@ -404,53 +405,55 @@ class ThemeManager : Disposable {
             val themeFile = themeResourceDir?.resolve(themeFileName)?.toFile()
             val vscodeThemeFile = themeResourceDir?.resolve(vscodeThemeName)?.toFile()
             
-            if (themeFile?.exists() == true && vscodeThemeFile?.exists() == true) {
-                // Read theme file content
-                val themeContent = themeFile.readText()
-                
-                // Parse theme content
-                val parsed = parseThemeString(themeContent)
-                
-                // Handle include field, similar to getTheme.ts logic
-                var finalTheme = parsed
-                if (parsed.has("include")) {
-                    val includeFileName = parsed.get("include").asString
-                    val includePath = themeResourceDir?.resolve(includeFileName)
-                    
-                    if (includePath != null && includePath.exists()) {
-                        try {
-                            val includeContent = includePath.toFile().readText()
-                            val includeTheme = parseThemeString(includeContent)
-                            finalTheme = mergeJsonObjects(finalTheme, includeTheme)
-                        } catch (e: Exception) {
-                            logger.error("Error processing include theme: $includeFileName", e)
-                        }
+            val cssExists = vscodeThemeFile?.exists() == true
+            if (!cssExists) {
+                logger.warn("VSCode theme style file does not exist: $vscodeThemeName")
+                return
+            }
+
+            // Read theme file content if it exists; otherwise proceed with an empty theme
+            val themeContent = if (themeFile?.exists() == true) themeFile.readText() else ""
+
+            // Parse theme content when non-blank; otherwise start from an empty JsonObject
+            val parsed = if (themeContent.isNotBlank()) parseThemeString(themeContent) else JsonObject()
+
+            // Handle include field, similar to getTheme.ts logic
+            var finalTheme = parsed
+            if (parsed.has("include")) {
+                val includeFileName = parsed.get("include").asString
+                val includePath = themeResourceDir?.resolve(includeFileName)
+
+                if (includePath != null && includePath.exists()) {
+                    try {
+                        val includeContent = includePath.toFile().readText()
+                        val includeTheme = parseThemeString(includeContent)
+                        finalTheme = mergeJsonObjects(finalTheme, includeTheme)
+                    } catch (e: Exception) {
+                        logger.error("Error processing include theme: $includeFileName", e)
                     }
                 }
-                
-                // Convert theme
-                val converted = convertTheme(finalTheme)
-                
-                // Read VSCode theme style file
-                themeStyleContent = loadVscodeThemeStyle(vscodeThemeFile)
-                
-                // Add style content to converted theme object
-                if (themeStyleContent != null) {
-                    converted.addProperty("cssContent", themeStyleContent)
-                }
-                
-                // Update cache
-                val oldConfig = currentThemeConfig
-                currentThemeConfig = converted
-                
-                logger.info("Loaded and converted theme configuration: $themeFileName")
-                
-                // Notify listeners when configuration changes
-                if (oldConfig?.toString() != converted.toString()) {
-                    notifyThemeChangeListeners()
-                }
-            } else {
-                logger.warn("Theme configuration file does not exist: $themeFileName")
+            }
+
+            // Convert theme (works even if finalTheme is empty)
+            val converted = convertTheme(finalTheme)
+
+            // Read VSCode theme style file
+            themeStyleContent = vscodeThemeFile?.let { loadVscodeThemeStyle(it) }
+
+            // Add style content to converted theme object
+            if (themeStyleContent != null) {
+                converted.addProperty("cssContent", themeStyleContent)
+            }
+
+            // Update cache
+            val oldConfig = currentThemeConfig
+            currentThemeConfig = converted
+
+            logger.info("Loaded and converted theme configuration: $themeFileName (theme exists: ${themeFile?.exists() == true}, css exists: $cssExists)")
+
+            // Notify listeners when configuration changes
+            if (oldConfig?.toString() != converted.toString()) {
+                notifyThemeChangeListeners()
             }
         } catch (e: IOException) {
             logger.error("Error reading theme configuration", e)
@@ -570,13 +573,17 @@ class ThemeManager : Disposable {
             
             if (themeDir.notExists()) {
                 // Try second path: integrations/theme/default-themes
-                themeDir = Paths.get(resourceRoot, "integrations", "theme", "default-themes")
+                themeDir = getDefaultThemeResourceDir(resourceRoot);
                 if (themeDir.notExists()) {
                     return null
                 }
             }
             
             return themeDir
+        }
+
+        fun getDefaultThemeResourceDir(resourceRoot: String):  Path {
+            return Paths.get(resourceRoot, "integrations", "theme", "default-themes")
         }
         
         /**

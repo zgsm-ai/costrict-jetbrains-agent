@@ -54,7 +54,21 @@ class RPCManager(
                 // Send empty configuration model
                 logger.info("Sending configuration information to extension process")
                 val themeName =
-                    if (ThemeManager.getInstance().isDarkThemeForce()) "Default Dark Modern" else "Default Light Modern"
+                    if (ThemeManager.getInstance().isDarkThemeForce()) "Visual Studio 2017 Dark - C++" else "Visual Studio 2017 Light - C++"
+
+                // Get proxy configuration
+                val httpProxyConfig = ProxyConfigUtil.getHttpProxyConfigForInitialization()
+
+                // Build configuration contents
+                val contentsBuilder = mutableMapOf<String, Any>(
+                    "workbench.colorTheme" to themeName
+                )
+
+                // Add proxy configuration if available
+                httpProxyConfig?.let {
+                    contentsBuilder["http"] = it
+                    logger.info("Using proxy configuration for initialization: $it")
+                }
 
                 // Create empty configuration model
                 val emptyMap = mapOf(
@@ -62,19 +76,6 @@ class RPCManager(
                     "keys" to emptyList<String>(),
                     "overrides" to emptyList<String>()
                 )
-                // Get proxy configuration
-                val httpProxyConfig = ProxyConfigUtil.getHttpProxyConfigForInitialization()
-                
-                // Build configuration contents
-                val contentsBuilder = mutableMapOf<String, Any>(
-                    "workbench" to mapOf("colorTheme" to themeName)
-                )
-                
-                // Add proxy configuration if available
-                httpProxyConfig?.let {
-                    contentsBuilder["http"] = it
-                    logger.info("Using proxy configuration for initialization: $it")
-                }
                 
                 val emptyConfigModel = mapOf(
                     "defaults" to mapOf(
