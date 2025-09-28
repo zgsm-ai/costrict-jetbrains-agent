@@ -1,6 +1,9 @@
 [submodule "deps/roo-code"]
 	path = deps/roo-code
 	url = https://github.com/RooCodeInc/Roo-Code.git
+[submodule "deps/costrict"]
+	path = deps/costrict
+	url = https://github.com/zgsm-ai/costrict.git
 [submodule "deps/vscode"]
 	path = deps/vscode
 	url = https://github.com/microsoft/vscode.git

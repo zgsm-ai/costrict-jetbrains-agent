@@ -7,11 +7,11 @@ SPDX-License-Identifier: Apache-2.0
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
-    <id>RunVSAgent</id>
+    <id>Costrict</id>
 
     <!-- Public plugin name should be written in Title Case.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
-    <name>RunVSAgent</name>
+    <name>Costrict</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
     <vendor url="https://weibo.com">WeCode-AI</vendor>
@@ -98,11 +98,11 @@ SPDX-License-Identifier: Apache-2.0
         <postStartupActivity implementation="com.sina.weibo.agent.plugin.WecoderPlugin"/>
         <editorFactoryListener implementation="com.sina.weibo.agent.editor.EditorListener"/>
         <toolWindow factoryClass="com.sina.weibo.agent.ui.RunVSAgentToolWindowFactory"
-                    id="RunVSAgent"
+                    id="Costrict"
                     secondary="true"
-                    icon="/icons/wecoder-window.svg"
+                    icon="/icons/costrict.svg"
                     anchor="right" />
-        <notificationGroup id="RunVSAgent"
+        <notificationGroup id="Costrict"
                            displayType="BALLOON"/>
     </extensions>
 
@@ -111,14 +111,14 @@ SPDX-License-Identifier: Apache-2.0
     </extensions>
 
     <actions>
-        <action id="RunVSAgent.extensionSwitcher"
-                icon="AllIcons.Actions.Refresh"
-                class="com.sina.weibo.agent.extensions.ui.actions.ExtensionSwitcherAction"
-                text="Switch Extension Provider"
-                description="Switch to a different extension provider">
-            <override-text place="GoToAction" text="Switch Extension" />
-            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt S" />
-        </action>
+<!--        <action id="RunVSAgent.extensionSwitcher"-->
+<!--                icon="AllIcons.Actions.Refresh"-->
+<!--                class="com.sina.weibo.agent.extensions.ui.actions.ExtensionSwitcherAction"-->
+<!--                text="Switch Extension Provider"-->
+<!--                description="Switch to a different extension provider">-->
+<!--            <override-text place="GoToAction" text="Switch Extension" />-->
+<!--            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt S" />-->
+<!--        </action>-->
 
 
         <!-- Dynamic toolbar group - buttons will be populated based on current extension -->

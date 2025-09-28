@@ -236,7 +236,7 @@ setup_submodules() {
     fi
     
     execute_cmd "git submodule init" "submodule init"
-    execute_cmd "git submodule update --recursive" "submodule update"
+    execute_cmd "git submodule update --recursive --depth 10" "submodule update"
     
     # Switch to development branch if specified
     local vscode_dir="$PROJECT_ROOT/$VSCODE_SUBMODULE_PATH"
