@@ -67,7 +67,7 @@ class ExtensionManager(private val project: Project) {
             // Only set default provider when no configuration exists (optional)
             LOG.info("No extension configured, skipping default provider setup")
             // Comment out automatic default provider setup logic
-            // setDefaultExtensionProvider()
+             setDefaultExtensionProvider()
         }
         
         LOG.info("Extension manager initialized")
@@ -107,9 +107,6 @@ class ExtensionManager(private val project: Project) {
 
     fun getAllExtensions(): List<ExtensionProvider> {
         return ArrayList<ExtensionProvider>().apply {
-            add(RooExtensionProvider())
-            add(ClineExtensionProvider())
-            add(KiloCodeExtensionProvider())
             add(CostrictExtensionProvider())
         }
     }
@@ -137,12 +134,12 @@ class ExtensionManager(private val project: Project) {
         val availableProviders = extensionProviders.values.filter { it.isAvailable(project) }
         
         if (availableProviders.isNotEmpty()) {
-            // Prefer roo-code as default provider
+            // Prefer costrict as default provider
 //             val rooProvider = availableProviders.find { it.getExtensionId() == "roo-code" }
-            val rooProvider = availableProviders.find { it.getExtensionId() == "cline" }
+            val rooProvider = availableProviders.find { it.getExtensionId() == "costrict" }
             if (rooProvider != null) {
                 currentProvider = rooProvider
-                LOG.info("Set default extension provider: roo-code (preferred)")
+                LOG.info("Set default extension provider: costrict (preferred)")
             } else {
                 // Fallback to first available provider
                 currentProvider = availableProviders.first()

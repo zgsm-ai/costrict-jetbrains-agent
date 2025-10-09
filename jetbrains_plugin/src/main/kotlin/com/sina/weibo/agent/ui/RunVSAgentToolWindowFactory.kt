@@ -1333,10 +1333,29 @@ class RunVSAgentToolWindowFactory : ToolWindowFactory {
                 contentPanel.add(buttonPanel, BorderLayout.SOUTH)
                 logger.info("Showing system info panel - configuration is valid")
             } else {
-                // Configuration is invalid, show plugin selection
-                contentPanel.add(pluginSelectionPanel, BorderLayout.CENTER)
-                contentPanel.add(configStatusPanel, BorderLayout.SOUTH)
-                logger.info("Showing plugin selection panel - configuration is invalid")
+                // Configuration is invalid, automatically set default plugin to "costrict"
+                logger.info("Configuration is invalid, setting default plugin to 'costrict'")
+                
+                // Show system info panel while setting up
+                contentPanel.add(placeholderLabel, BorderLayout.CENTER)
+                contentPanel.add(buttonPanel, BorderLayout.SOUTH)
+                
+                // Set default plugin in background thread to avoid blocking UI
+                Thread {
+                    try {
+                        // Set default plugin ID
+                        configManager.setCurrentExtensionId("costrict")
+                        
+                        // Start plugin after configuration is set
+                        ApplicationManager.getApplication().invokeLater {
+                            if (!isPluginStarting && !isPluginRunning) {
+                                startPluginAfterSelection("costrict")
+                            }
+                        }
+                    } catch (e: Exception) {
+                        logger.error("Failed to set default plugin configuration", e)
+                    }
+                }.start()
             }
             
             contentPanel.revalidate()

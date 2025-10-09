@@ -288,9 +288,9 @@ install_dependencies() {
             [[ -f "pnpm-lock.yaml" ]] && rm -f "pnpm-lock.yaml"
         fi
         
-        # Use pnpm if available and lock file exists
+        # Use pnpm if available and workspace file exists
         local pkg_manager="npm"
-        if command_exists "pnpm" && [[ -f "pnpm-lock.yaml" ]]; then
+        if command_exists "pnpm" && ([[ -f "pnpm-lock.yaml" ]] || [[ -f "pnpm-workspace.yaml" ]]); then
             pkg_manager="pnpm"
         fi
         
