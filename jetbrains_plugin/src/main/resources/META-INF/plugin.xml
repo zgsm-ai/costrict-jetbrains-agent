@@ -127,7 +127,7 @@ SPDX-License-Identifier: Apache-2.0
                    class="com.sina.weibo.agent.extensions.ui.actions.DynamicExtensionActionsGroup"
                    text="Extension Actions"
                    description="Dynamic extension-specific actions" />
-            <reference ref="RunVSAgent.extensionSwitcher" />
+<!--            <reference ref="RunVSAgent.extensionSwitcher" />-->
             <action id="RunVSAgent.extensionStatusChecker"
                     icon="AllIcons.General.InspectionsOK"
                     class="com.sina.weibo.agent.extensions.ui.actions.ExtensionStatusChecker"
@@ -135,7 +135,7 @@ SPDX-License-Identifier: Apache-2.0
                     description="Check extension status and diagnose issues" />
         </group>
 
-        <group id="RunVSAgent.RightClickMenu" text="RunVSAgent" description="RunVSAgent main menu"  icon="/icons/weibo_logo_13px.svg" popup="true">
+        <group id="RunVSAgent.RightClickMenu" text="Costrict" description="Costrict main menu"  icon="/icons/weibo_logo_13px.svg" popup="true">
             <group id="RunVSAgent.RightClick.Chat" class="com.sina.weibo.agent.extensions.ui.contextmenu.DynamicExtensionContextMenuGroup"
                    text="Extension Actions" description="Dynamic extension-specific context menu actions"/>
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
@@ -143,7 +143,7 @@ SPDX-License-Identifier: Apache-2.0
 
         <!-- Right-click menu for extension switching -->
         <group id="RunVSAgent.RightClick.Extensions" text="Extensions" description="Extension management">
-            <reference ref="RunVSAgent.extensionSwitcher" />
+<!--            <reference ref="RunVSAgent.extensionSwitcher" />-->
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </group>
 
@@ -157,9 +157,9 @@ SPDX-License-Identifier: Apache-2.0
         </group>
 
         <!-- Main menu integration -->
-        <group id="RunVSAgent.MainMenu" text="RunVSAgent" description="RunVSAgent main menu">
+        <group id="RunVSAgent.MainMenu" text="Costrict" description="Costrict main menu">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
-            <reference ref="RunVSAgent.extensionSwitcher" />
+<!--            <reference ref="RunVSAgent.extensionSwitcher" />-->
             <group id="RunVSAgent.MainMenu.DynamicExtensionActions"
                    class="com.sina.weibo.agent.extensions.ui.actions.DynamicExtensionActionsGroup"
                    text="Extension Actions"

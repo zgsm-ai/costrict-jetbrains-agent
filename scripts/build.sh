@@ -54,6 +54,7 @@ OPTIONS:
     --skip-vscode         Skip VSCode extension build
     --skip-base           Skip base extension build
     --skip-idea           Skip IDEA plugin build
+    --skip-nodejs         Skip Node.js preparation
     -v, --verbose         Enable verbose output
     -n, --dry-run         Show what would be done without executing
     -h, --help            Show this help message
@@ -70,11 +71,12 @@ EXAMPLES:
     $SCRIPT_NAME --output ./dist           # Custom output directory
 
 ENVIRONMENT:
-    BUILD_MODE          Override build mode (release/debug)
-    VSIX_FILE           Path to existing VSIX file
-    SKIP_VSCODE_BUILD   Skip VSCode build if set to 'true'
-    SKIP_BASE_BUILD     Skip base build if set to 'true'
-    SKIP_IDEA_BUILD     Skip IDEA build if set to 'true'
+    BUILD_MODE           Override build mode (release/debug)
+    VSIX_FILE            Path to existing VSIX file
+    SKIP_VSCODE_BUILD    Skip VSCode build if set to 'true'
+    SKIP_BASE_BUILD      Skip base build if set to 'true'
+    SKIP_IDEA_BUILD      Skip IDEA build if set to 'true'
+    SKIP_NODEJS_PREPARE  Skip Node.js preparation if set to 'true'
 
 EXIT CODES:
     0    Success
@@ -133,6 +135,10 @@ parse_build_args() {
                 ;;
             --skip-idea)
                 SKIP_IDEA_BUILD=true
+                shift
+                ;;
+            --skip-nodejs)
+                SKIP_NODEJS_PREPARE=true
                 shift
                 ;;
             -v|--verbose)

@@ -106,6 +106,19 @@ remove_dir() {
     fi
 }
 
+# Remove file safely
+remove_file() {
+    local file="$1"
+    if [[ -f "$file" ]]; then
+        if [[ "$DRY_RUN" == "true" ]]; then
+            log_debug "Would remove file: $file"
+        else
+            rm -f "$file"
+            check_result "Failed to remove file: $file" "Removed file: $file"
+        fi
+    fi
+}
+
 # Copy files/directories
 copy_files() {
     local src="$1"
