@@ -175,6 +175,16 @@ fun Sync.prepareSandbox() {
         copyAndTrack("${vscodePluginDir.path}/extension", "${sandboxDir}/${vsCodePluginName}")
         copyAndTrack("src/main/resources/themes/", "${sandboxDir}/${vsCodePluginName}/integrations/theme/default-themes/")
         copyAndTrack("src/main/resources/themes/", "${sandboxDir}/themes/")
+        
+        // Copy builtin Node.js and setup scripts if they exist
+        val builtinNodejsDir = File("src/main/resources/builtin-nodejs")
+        if (builtinNodejsDir.exists()) {
+            copyAndTrack("src/main/resources/builtin-nodejs/", "${sandboxDir}/builtin-nodejs/")
+        }
+        val scriptsDir = File("src/main/resources/scripts")
+        if (scriptsDir.exists()) {
+            copyAndTrack("src/main/resources/scripts/", "${sandboxDir}/scripts/")
+        }
 
         // The platform.zip file required for release mode is associated with the code in ../base/vscode, currently using version 1.100.0. If upgrading this code later
         // Need to modify the vscodeVersion value in gradle.properties, then execute the task named genPlatform, which will generate a new platform.zip file for submission

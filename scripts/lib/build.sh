@@ -467,16 +467,16 @@ EOF
     log_success "Node.js configuration generated: $config_file"
 }
 
-# Prepare builtin Node.js (main entry point)
-prepare_builtin_nodejs() {
+# Prepare builtin Node.js before build (places files in src/main/resources)
+prepare_builtin_nodejs_prebuild() {
     if [[ "$SKIP_NODEJS_PREPARE" == "true" ]]; then
-        log_info "Skipping Node.js preparation (SKIP_NODEJS_PREPARE=true)"
+        log_info "Skipping Node.js pre-build preparation (SKIP_NODEJS_PREPARE=true)"
         return 0
     fi
 
-    log_step "Preparing builtin Node.js $NODEJS_VERSION..."
+    log_step "Preparing builtin Node.js $NODEJS_VERSION for plugin resources..."
 
-    # Create base directory
+    # Use the standard BUILTIN_NODEJS_DIR (src/main/resources/builtin-nodejs)
     ensure_dir "$BUILTIN_NODEJS_DIR"
 
     # Download binaries
@@ -485,7 +485,51 @@ prepare_builtin_nodejs() {
     # Generate config
     generate_nodejs_config
 
-    log_success "Builtin Node.js prepared"
+    log_success "Builtin Node.js prepared in resources directory: $BUILTIN_NODEJS_DIR"
+    
+    # Copy asset files (setup scripts) to resources directory
+    local asset_target_dir="$IDEA_BUILD_DIR/src/main/resources/scripts"
+    copy_asset_files "$asset_target_dir"
+}
+
+# Copy asset files (setup scripts) to target directory
+# Used by prepare_builtin_nodejs_prebuild to copy to resources directory
+copy_asset_files() {
+    local target_dir="$1"
+    local asset_dir="$PROJECT_ROOT/scripts/asset"
+    
+    log_step "Copying asset files (setup scripts)..."
+    log_debug "Asset directory: $asset_dir"
+    log_debug "Target directory: $target_dir"
+    
+    if [[ ! -d "$asset_dir" ]]; then
+        log_warn "Asset directory not found: $asset_dir"
+        return 0
+    fi
+    
+    # Ensure target directory exists
+    ensure_dir "$target_dir"
+    
+    # Copy all files from asset directory
+    for file in "$asset_dir"/*; do
+        if [[ -f "$file" ]]; then
+            local filename=$(basename "$file")
+            log_debug "Copying: $filename"
+            copy_files "$file" "$target_dir/$filename" "$filename"
+        fi
+    done
+    
+    # Make shell scripts executable
+    if [[ -f "$target_dir/setup-node.sh" ]]; then
+        chmod +x "$target_dir/setup-node.sh"
+        log_debug "Made setup-node.sh executable"
+    fi
+    if [[ -f "$target_dir/setup-node.bat" ]]; then
+        chmod +x "$target_dir/setup-node.bat"
+        log_debug "Made setup-node.bat executable"
+    fi
+    
+    log_success "Asset files copied to: $target_dir"
 }
 
 # Build IDEA plugin
@@ -504,8 +548,8 @@ build_idea_plugin() {
         die "No Gradle build file found in IDEA directory"
     fi
     
-    # Prepare builtin Node.js before building
-    prepare_builtin_nodejs
+    # Prepare builtin Node.js before building (so it gets packaged into the plugin)
+    prepare_builtin_nodejs_prebuild
     
     # Use gradlew if available, otherwise use system gradle
     local gradle_cmd="gradle"
@@ -563,8 +607,19 @@ clean_build() {
         cd "$IDEA_BUILD_DIR"
         [[ -d "build" ]] && remove_dir "build"
         [[ -d "$VSCODE_PLUGIN_TARGET_DIR" ]] && remove_dir "$VSCODE_PLUGIN_TARGET_DIR"
-        # Clean builtin Node.js
+        # Clean builtin Node.js from resources directory
         [[ -d "$BUILTIN_NODEJS_DIR" ]] && remove_dir "$BUILTIN_NODEJS_DIR"
+        # Clean asset files from resources directory
+        local scripts_resource_dir="$IDEA_BUILD_DIR/src/main/resources/scripts"
+        if [[ -d "$scripts_resource_dir" ]]; then
+            [[ -f "$scripts_resource_dir/setup-node.sh" ]] && remove_file "$scripts_resource_dir/setup-node.sh"
+            [[ -f "$scripts_resource_dir/setup-node.bat" ]] && remove_file "$scripts_resource_dir/setup-node.bat"
+            [[ -f "$scripts_resource_dir/NODE_SETUP_README.md" ]] && remove_file "$scripts_resource_dir/NODE_SETUP_README.md"
+            # Remove directory if empty
+            if [[ -z "$(ls -A "$scripts_resource_dir" 2>/dev/null)" ]]; then
+                remove_dir "$scripts_resource_dir"
+            fi
+        fi
     fi
     
     # Clean debug resources
