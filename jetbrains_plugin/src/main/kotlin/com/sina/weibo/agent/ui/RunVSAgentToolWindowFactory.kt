@@ -153,7 +153,7 @@ class RunVSAgentToolWindowFactory : ToolWindowFactory {
 
                 // Header section
                 append("<div class='header'>")
-                append("<div class='title'>🚀 RunVSAgent</div>")
+                append("<div class='title'>Costrict</div>")
                 append("<div class='subtitle'>Initializing...</div>")
                 append("</div>")
 

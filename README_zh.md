@@ -1,4 +1,4 @@
-# RunVSAgent
+# Costrict
 
 [English](README.md) | 简体中文
 
@@ -8,11 +8,11 @@
 
 > **在其他 IDE 平台中运行基于 VSCode 的编码代理**
 
-RunVSAgent 是一个创新的跨平台开发工具，使开发者能够在 JetBrains IDEs（IntelliJ IDEA、WebStorm、PyCharm 等）或其他 IDE 平台中运行基于 VSCode 的编码代理和扩展。
+Costrict 是一个创新的跨平台开发工具，使开发者能够在 JetBrains IDEs（IntelliJ IDEA、WebStorm、PyCharm 等）或其他 IDE 平台中运行基于 VSCode 的编码代理和扩展。
 
 ## 📸 截图
 
-![RunVSAgent 截图](docs/screenshot.jpg)
+![Costrict 截图](docs/screenshot.jpg)
 
 ## 🚀 核心功能
 
@@ -23,12 +23,13 @@ RunVSAgent 是一个创新的跨平台开发工具，使开发者能够在 JetBr
 
 - **[Roo Code](https://roocode.com)**：具有智能代码生成和重构功能的高级 AI 驱动编码助手
 - **[Cline](https://cline.bot)**: 一个就在你 IDE 里的自主编码代理，在你的许可下，能够创建/编辑文件、执行命令、使用浏览器等更多功能，并在每一步都征求你的确认。
-- **[Kilo Code](https://kilocode.ai)**: 开源的VSCode AI Agent
+- **[Kilo Code](https://kilocode.ai)**: 开源的 VSCode AI Agent
 
 ## 🔧 支持的 IDE
 
 ### JetBrains IDEs
-RunVSAgent 目前支持以下 JetBrains IDE 系列：
+
+Costrict 目前支持以下 JetBrains IDE 系列：
 
 - **IntelliJ IDEA**（旗舰版和社区版）
 - **WebStorm** - JavaScript 和 TypeScript 开发
@@ -43,7 +44,6 @@ RunVSAgent 目前支持以下 JetBrains IDE 系列：
 
 > **注意**：为了获得最佳兼容性，需要 JetBrains IDE 版本 2023.1 或更高版本。
 
-
 ## 🏗️ 架构
 
 ```mermaid
@@ -53,28 +53,29 @@ graph TB
         B[UI 集成]
         C[编辑器桥接]
     end
-    
+
     subgraph "扩展宿主"
         D[Node.js 运行时]
         E[VSCode API 层]
         F[代理管理器]
     end
-    
+
     subgraph "VSCode 代理"
         G[编码代理]
     end
-    
+
     A <-->|RPC 通信| D
     B --> A
     C --> A
-    
+
     E --> D
     F --> D
-    
+
     G --> E
 ```
 
 **架构组件**：
+
 - **JetBrains 插件**：基于 Kotlin 的 IDE 插件，用于 JetBrains IDE 集成
 - **扩展宿主**：提供 VSCode API 兼容层的 Node.js 运行时环境
 - **RPC 通信**：用于实时数据交换的高性能进程间通信
@@ -82,37 +83,40 @@ graph TB
 
 ## 📦 安装
 
-### [从 JetBrains Marketplace 下载](https://plugins.jetbrains.com/plugin/28068-runvsagent)（推荐）
+### [从 JetBrains Marketplace 下载](https://plugins.jetbrains.com/plugin/28068-Costrict)（推荐）
 
 **推荐方式**：我们建议优先从 JetBrains Marketplace 下载和安装插件，这是最便捷和安全的安装方式。
 
 1. **在线安装**：
+
    - 打开您的 JetBrains IDE（IntelliJ IDEA、WebStorm、PyCharm 等）
    - 转到 `设置/首选项` → `插件`
-   - 在 `Marketplace` 标签页中搜索 "RunVSAgent"
+   - 在 `Marketplace` 标签页中搜索 "Costrict"
    - 点击 `安装` 按钮
    - 在提示时重启您的 IDE
 
-2. **验证安装**：重启后，您应该在 IDE 的插件列表中看到 RunVSAgent 插件
+2. **验证安装**：重启后，您应该在 IDE 的插件列表中看到 Costrict 插件
 
 ### 从 GitHub Releases 下载
 
 您可以从我们的 GitHub releases 页面下载预构建的插件：
 
-1. **下载插件**：访问 [GitHub Releases](https://github.com/wecode-ai/RunVSAgent/releases) 页面并下载最新的插件文件（`.zip` 格式）
+1. **下载插件**：访问 [GitHub Releases](https://github.com/wecode-ai/Costrict/releases) 页面并下载最新的插件文件（`.zip` 格式）
 
 2. **在 JetBrains IDE 中安装**：
+
    - 打开您的 JetBrains IDE（IntelliJ IDEA、WebStorm、PyCharm 等）
    - 转到 `设置/首选项` → `插件`
    - 点击齿轮图标 ⚙️ 并选择 `从磁盘安装插件...`
    - 选择下载的 `.zip` 文件
    - 在提示时重启您的 IDE
 
-3. **验证安装**：重启后，您应该在 IDE 的插件列表中看到 RunVSAgent 插件
+3. **验证安装**：重启后，您应该在 IDE 的插件列表中看到 Costrict 插件
 
 ### 从源码构建
 
 #### 前置条件
+
 - Node.js 18.0+
 - JetBrains IDE 2023.1+
 - Git
@@ -122,8 +126,8 @@ graph TB
 
 ```bash
 # 1. 克隆仓库
-git clone https://github.com/your-org/RunVSAgent.git
-cd RunVSAgent
+git clone https://github.com/your-org/Costrict.git
+cd Costrict
 
 # 2. 设置开发环境
 ./scripts/setup.sh
@@ -154,7 +158,7 @@ cd jetbrains_plugin
 ### 项目结构
 
 ```
-RunVSAgent/
+Costrict/
 ├── extension_host/          # Node.js 扩展宿主
 │   ├── src/                # TypeScript 源代码
 │   │   ├── main.ts         # 主入口点
@@ -197,7 +201,8 @@ RunVSAgent/
 我们感谢所有帮助改进此项目的贡献者：
 
 ### 🌟 核心贡献者
-- **[Naituw](https://github.com/Naituw)** - *项目架构师*
+
+- **[Naituw](https://github.com/Naituw)** - _项目架构师_
 - [wayu002](https://github.com/wayu002)
 - [joker535](https://github.com/joker535)
 - [andrewzq777](https://github.com/andrewzq777)
@@ -218,12 +223,12 @@ RunVSAgent/
 ### 维护者
 
 - **组织**：WeCode-AI 团队，微博公司
-- **联系方式**：[GitHub Issues](https://github.com/wecode-ai/RunVSAgent/issues)
+- **联系方式**：[GitHub Issues](https://github.com/wecode-ai/Costrict/issues)
 - **网站**：[https://weibo.com](https://weibo.com)
 
 ---
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=wecode-ai/RunVSAgent&type=Date)](https://www.star-history.com/#wecode-ai/RunVSAgent&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=wecode-ai/Costrict&type=Date)](https://www.star-history.com/#wecode-ai/Costrict&Date)
 **由 WeCode-AI 团队用 ❤️ 制作**

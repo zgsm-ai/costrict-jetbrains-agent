@@ -532,6 +532,31 @@ copy_asset_files() {
     log_success "Asset files copied to: $target_dir"
 }
 
+# Clean IDEA resources after build
+# This removes temporary build artifacts from resources directory
+clean_idea_resources_postbuild() {
+    log_step "Cleaning IDEA temporary resources after build..."
+    
+    local builtin_nodejs_dir="$IDEA_BUILD_DIR/src/main/resources/builtin-nodejs"
+    local scripts_dir="$IDEA_BUILD_DIR/src/main/resources/scripts"
+    
+    # Remove builtin-nodejs directory
+    if [[ -d "$builtin_nodejs_dir" ]]; then
+        log_info "Removing builtin-nodejs directory..."
+        remove_dir "$builtin_nodejs_dir"
+        log_debug "Removed: $builtin_nodejs_dir"
+    fi
+    
+    # Remove scripts directory
+    if [[ -d "$scripts_dir" ]]; then
+        log_info "Removing scripts directory..."
+        remove_dir "$scripts_dir"
+        log_debug "Removed: $scripts_dir"
+    fi
+    
+    log_success "IDEA temporary resources cleaned"
+}
+
 # Build IDEA plugin
 build_idea_plugin() {
     if [[ "$SKIP_IDEA_BUILD" == "true" ]]; then
@@ -581,6 +606,9 @@ build_idea_plugin() {
     else
         log_warn "IDEA plugin file not found in build/distributions"
     fi
+    
+    # Clean temporary resources after successful build
+    clean_idea_resources_postbuild
 }
 
 # Clean build artifacts

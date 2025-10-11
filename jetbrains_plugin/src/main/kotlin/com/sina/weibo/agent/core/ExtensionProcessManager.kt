@@ -79,7 +79,7 @@ class ExtensionProcessManager : Disposable {
                 // Show notification that we're attempting to install
                 NotificationUtil.showInfo(
                     "Setting up Node.js",
-                    "Node.js not found. Attempting to install builtin Node.js $MIN_REQUIRED_NODE_VERSION..."
+                    "没有找到 NodeJS. 正在安装 Nodejs $MIN_REQUIRED_NODE_VERSION..."
                 )
                 
                 // Try to run setup script
@@ -88,7 +88,7 @@ class ExtensionProcessManager : Disposable {
                     // Successfully installed
                     NotificationUtil.showInfo(
                         "Node.js setup completed",
-                        "Node.js has been successfully installed and configured. please restart"
+                        "NodeJS 安装成功"
                     )
                     // Retry finding Node.js after setup
                     nodePath = findNodeExecutable()
