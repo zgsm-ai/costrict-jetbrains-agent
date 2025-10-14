@@ -14,6 +14,7 @@ import com.sina.weibo.agent.extensions.common.ExtensionChangeListener
 import com.sina.weibo.agent.extensions.plugin.cline.ClineButtonProvider
 import com.sina.weibo.agent.extensions.plugin.roo.RooCodeButtonProvider
 import com.sina.weibo.agent.extensions.plugin.kilo.KiloCodeButtonProvider
+import com.sina.weibo.agent.extensions.plugin.costrict.CostrictCodeButtonProvider
 import com.sina.weibo.agent.extensions.ui.buttons.ExtensionButtonProvider
 
 /**
@@ -80,6 +81,7 @@ class DynamicExtensionActionsGroup : DefaultActionGroup(), DumbAware, ActionUpda
             "roo-code" -> RooCodeButtonProvider()
             "cline" -> ClineButtonProvider()
             "kilo-code" -> KiloCodeButtonProvider()
+            "costrict" -> CostrictCodeButtonProvider()
             else -> null
         }
         
@@ -109,6 +111,7 @@ class DynamicExtensionActionsGroup : DefaultActionGroup(), DumbAware, ActionUpda
             "roo-code" -> RooCodeButtonProvider()
             "cline" -> ClineButtonProvider()
             "kilo-code" -> KiloCodeButtonProvider()
+            "costrict" -> CostrictCodeButtonProvider()
             else -> null
         }
         // Create actions based on extension type

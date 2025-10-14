@@ -14,6 +14,7 @@ import com.sina.weibo.agent.extensions.core.ExtensionManager
 import com.sina.weibo.agent.extensions.plugin.cline.ClineButtonProvider
 import com.sina.weibo.agent.extensions.plugin.roo.RooCodeButtonProvider
 import com.sina.weibo.agent.extensions.plugin.kilo.KiloCodeButtonProvider
+import com.sina.weibo.agent.extensions.plugin.costrict.CostrictCodeButtonProvider
 
 /**
  * Dynamic button manager that controls which buttons are visible based on the current extension type.
@@ -94,6 +95,7 @@ class DynamicButtonManager(private val project: Project) {
             "roo-code" -> RooCodeButtonProvider()
             "cline" -> ClineButtonProvider()
             "kilo-code" -> KiloCodeButtonProvider()
+            "costrict" -> CostrictCodeButtonProvider()
             // TODO: Add other button providers as they are implemented
             // "copilot" -> CopilotButtonProvider()
             // "claude" -> ClaudeButtonProvider()

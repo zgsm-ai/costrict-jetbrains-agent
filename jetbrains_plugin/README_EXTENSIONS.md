@@ -24,6 +24,12 @@ RunVSAgent now supports a modular extension system that allows you to use differ
 - **Publisher**: Kilo-AI
 - **Directory**: `kilo-code/`
 
+### 4. Costrict
+- **ID**: `costrict`
+- **Description**: AI-powered code assistant with advanced capabilities
+- **Publisher**: zgsm-ai
+- **Directory**: `costrict/`
+
 ## Quick Start
 
 ### For Users
@@ -40,7 +46,7 @@ RunVSAgent now supports a modular extension system that allows you to use differ
    ```properties
    extension.type=roo-code
    ```
-   - Supported values: `roo-code`, `cline`, `kilo-code`
+   - Supported values: `roo-code`, `cline`, `kilo-code`, `costrict`
 
 3. **Extension Directory Structure**:
    ```

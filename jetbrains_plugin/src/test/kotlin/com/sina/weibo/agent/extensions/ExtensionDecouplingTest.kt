@@ -8,6 +8,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.sina.weibo.agent.extensions.core.ExtensionManager
 import com.sina.weibo.agent.extensions.plugin.roo.RooExtensionProvider
 import com.sina.weibo.agent.extensions.plugin.kilo.KiloCodeExtensionProvider
+import com.sina.weibo.agent.extensions.plugin.costrict.CostrictExtensionProvider
 
 /**
  * Test class for extension decoupling functionality
@@ -81,6 +82,7 @@ class ExtensionDecouplingTest : BasePlatformTestCase() {
         val providers = listOf(
             RooExtensionProvider(),
             KiloCodeExtensionProvider(),
+            CostrictExtensionProvider(),
         )
         
         providers.forEach { provider ->

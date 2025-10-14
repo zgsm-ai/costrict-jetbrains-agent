@@ -8,6 +8,7 @@ enum class ExtensionType(val code: String, val displayName: String, val descript
     ROO_CODE("roo-code", "Roo Code", "AI-powered code assistant"),
     CLINE("cline", "Cline AI", "AI-powered coding assistant with advanced features"),
     KILO_CODE("kilo-code", "Kilo Code", "AI-powered code assistant with advanced capabilities"),
+    COSTRICT("costrict", "Costrict", "AI-powered code assistant with advanced capabilities"),
     ;
 
     companion object {
