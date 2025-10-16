@@ -26,7 +26,7 @@ DRY_RUN=false
 
 # Project structure constants
 export VSCODE_SUBMODULE_PATH="deps/vscode"
-export PLUGIN_SUBMODULE_PATH="deps/roo-code"
+export PLUGIN_SUBMODULE_PATH="deps/costrict"
 export EXTENSION_HOST_DIR="extension_host"
 
 # Logging functions
@@ -102,6 +102,19 @@ remove_dir() {
         else
             rm -rf "$dir"
             check_result "Failed to remove directory: $dir" "Removed directory: $dir"
+        fi
+    fi
+}
+
+# Remove file safely
+remove_file() {
+    local file="$1"
+    if [[ -f "$file" ]]; then
+        if [[ "$DRY_RUN" == "true" ]]; then
+            log_debug "Would remove file: $file"
+        else
+            rm -f "$file"
+            check_result "Failed to remove file: $file" "Removed file: $file"
         fi
     fi
 }

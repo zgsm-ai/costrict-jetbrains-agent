@@ -236,7 +236,7 @@ setup_submodules() {
     fi
     
     execute_cmd "git submodule init" "submodule init"
-    execute_cmd "git submodule update --recursive" "submodule update"
+    execute_cmd "git submodule update --recursive --depth 10" "submodule update"
     
     # Switch to development branch if specified
     local vscode_dir="$PROJECT_ROOT/$VSCODE_SUBMODULE_PATH"
@@ -288,9 +288,9 @@ install_dependencies() {
             [[ -f "pnpm-lock.yaml" ]] && rm -f "pnpm-lock.yaml"
         fi
         
-        # Use pnpm if available and lock file exists
+        # Use pnpm if available and workspace file exists
         local pkg_manager="npm"
-        if command_exists "pnpm" && [[ -f "pnpm-lock.yaml" ]]; then
+        if command_exists "pnpm" && ([[ -f "pnpm-lock.yaml" ]] || [[ -f "pnpm-workspace.yaml" ]]); then
             pkg_manager="pnpm"
         fi
         

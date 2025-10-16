@@ -56,3 +56,8 @@ jetbrains_plugin/build
 .gradle
 deps/vsix/package/*
 deps/vsix/plugin/*
+deps/costrict/*
+
+# Builtin Node.js binaries (downloaded during build)
+jetbrains_plugin/src/main/resources/builtin-nodejs/
+jetbrains_plugin/src/main/resources/scripts/

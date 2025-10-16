@@ -23,6 +23,20 @@ VSIX_FILE=""
 SKIP_VSCODE_BUILD=false
 SKIP_BASE_BUILD=false
 SKIP_IDEA_BUILD=false
+SKIP_NODEJS_PREPARE=false
+
+# Node.js configuration
+readonly NODEJS_VERSION="20.6.0"
+BUILTIN_NODEJS_DIR=""  # Will be set in init_build_env()
+readonly NODEJS_DOWNLOAD_BASE_URL="https://nodejs.org/dist/v${NODEJS_VERSION}"
+
+# Node.js platform mappings
+declare -A NODEJS_PLATFORMS=(
+    ["windows-x64"]="node-v${NODEJS_VERSION}-win-x64.zip"
+    # ["macos-x64"]="node-v${NODEJS_VERSION}-darwin-x64.tar.gz"
+    # ["macos-arm64"]="node-v${NODEJS_VERSION}-darwin-arm64.tar.gz"
+    # ["linux-x64"]="node-v${NODEJS_VERSION}-linux-x64.tar.xz"
+)
 
 # Initialize build environment
 init_build_env() {
@@ -33,8 +47,9 @@ init_build_env() {
     export PLUGIN_BUILD_DIR="$PROJECT_ROOT/$PLUGIN_SUBMODULE_PATH"
     export BASE_BUILD_DIR="$PROJECT_ROOT/$EXTENSION_HOST_DIR"
     export IDEA_BUILD_DIR="$PROJECT_ROOT/$IDEA_DIR"
-    export VSCODE_PLUGIN_NAME="${VSCODE_PLUGIN_NAME:-roo-code}"
+    export VSCODE_PLUGIN_NAME="${VSCODE_PLUGIN_NAME:-costrict}"
     export VSCODE_PLUGIN_TARGET_DIR="$IDEA_BUILD_DIR/plugins/${VSCODE_PLUGIN_NAME}"
+    export BUILTIN_NODEJS_DIR="$IDEA_BUILD_DIR/src/main/resources/builtin-nodejs"
     
     # Validate build tools
     validate_build_tools
@@ -352,6 +367,196 @@ copy_base_debug_resources() {
     log_success "Base debug resources copied"
 }
 
+# Download Node.js binary for a specific platform
+download_nodejs_binary() {
+    local platform="$1"
+    local filename="${NODEJS_PLATFORMS[$platform]}"
+    local url="$NODEJS_DOWNLOAD_BASE_URL/$filename"
+    local target_dir="$BUILTIN_NODEJS_DIR/$platform"
+    local target_file="$target_dir/$filename"
+
+    # Skip if already exists and valid
+    if [[ -f "$target_file" ]]; then
+        local file_size=$(stat -f%z "$target_file" 2>/dev/null || stat -c%s "$target_file" 2>/dev/null || echo "0")
+        local min_size=25000000  # 25MB (Windows zip is typically ~28MB)
+
+        if [[ "$file_size" -gt "$min_size" ]]; then
+            log_debug "Node.js binary already exists for $platform (${file_size} bytes)"
+            return 0
+        else
+            log_warn "Existing file is too small, re-downloading..."
+            rm -f "$target_file"
+        fi
+    fi
+
+    log_info "Downloading Node.js $NODEJS_VERSION for $platform..."
+
+    ensure_dir "$target_dir"
+
+    # Download with progress
+    if command_exists "curl"; then
+        execute_cmd "curl -L --progress-bar -o '$target_file' '$url'" "download Node.js $platform"
+    elif command_exists "wget"; then
+        execute_cmd "wget --show-progress -O '$target_file' '$url'" "download Node.js $platform"
+    else
+        die "Neither curl nor wget found for downloading Node.js"
+    fi
+
+    # Verify download
+    local file_size=$(stat -f%z "$target_file" 2>/dev/null || stat -c%s "$target_file" 2>/dev/null || echo "0")
+    local min_size=25000000  # 25MB (Windows zip is typically ~28MB)
+
+    if [[ "$file_size" -lt "$min_size" ]]; then
+        remove_file "$target_file"
+        die "Downloaded Node.js binary appears corrupted for $platform (size: $file_size bytes)"
+    fi
+
+    log_success "Downloaded Node.js for $platform ($(( file_size / 1024 / 1024 ))MB)"
+}
+
+# Download all Node.js binaries
+download_all_nodejs_binaries() {
+    log_step "Downloading Node.js binaries for all platforms..."
+
+    for platform in "${!NODEJS_PLATFORMS[@]}"; do
+        download_nodejs_binary "$platform"
+    done
+
+    log_success "All Node.js binaries downloaded"
+}
+
+# Generate Node.js configuration file
+generate_nodejs_config() {
+    log_step "Generating Node.js configuration..."
+
+    local config_file="$BUILTIN_NODEJS_DIR/config.json"
+
+    # Create JSON config using heredoc
+    cat > "$config_file" << EOF
+{
+  "version": "$NODEJS_VERSION",
+  "platforms": {
+    "windows-x64": {
+      "file": "node-v$NODEJS_VERSION-win-x64.zip",
+      "extractPath": "node-v$NODEJS_VERSION-win-x64/",
+      "executable": "node.exe"
+    },
+    "macos-x64": {
+      "file": "node-v$NODEJS_VERSION-darwin-x64.tar.gz",
+      "extractPath": "node-v$NODEJS_VERSION-darwin-x64/bin/",
+      "executable": "node"
+    },
+    "macos-arm64": {
+      "file": "node-v$NODEJS_VERSION-darwin-arm64.tar.gz",
+      "extractPath": "node-v$NODEJS_VERSION-darwin-arm64/bin/",
+      "executable": "node"
+    },
+    "linux-x64": {
+      "file": "node-v$NODEJS_VERSION-linux-x64.tar.xz",
+      "extractPath": "node-v$NODEJS_VERSION-linux-x64/bin/",
+      "executable": "node"
+    }
+  }
+}
+EOF
+
+    if [[ ! -f "$config_file" ]]; then
+        die "Failed to generate Node.js configuration file"
+    fi
+
+    log_success "Node.js configuration generated: $config_file"
+}
+
+# Prepare builtin Node.js before build (places files in src/main/resources)
+prepare_builtin_nodejs_prebuild() {
+    if [[ "$SKIP_NODEJS_PREPARE" == "true" ]]; then
+        log_info "Skipping Node.js pre-build preparation (SKIP_NODEJS_PREPARE=true)"
+        return 0
+    fi
+
+    log_step "Preparing builtin Node.js $NODEJS_VERSION for plugin resources..."
+
+    # Use the standard BUILTIN_NODEJS_DIR (src/main/resources/builtin-nodejs)
+    ensure_dir "$BUILTIN_NODEJS_DIR"
+
+    # Download binaries
+    download_all_nodejs_binaries
+
+    # Generate config
+    generate_nodejs_config
+
+    log_success "Builtin Node.js prepared in resources directory: $BUILTIN_NODEJS_DIR"
+    
+    # Copy asset files (setup scripts) to resources directory
+    local asset_target_dir="$IDEA_BUILD_DIR/src/main/resources/scripts"
+    copy_asset_files "$asset_target_dir"
+}
+
+# Copy asset files (setup scripts) to target directory
+# Used by prepare_builtin_nodejs_prebuild to copy to resources directory
+copy_asset_files() {
+    local target_dir="$1"
+    local asset_dir="$PROJECT_ROOT/scripts/asset"
+    
+    log_step "Copying asset files (setup scripts)..."
+    log_debug "Asset directory: $asset_dir"
+    log_debug "Target directory: $target_dir"
+    
+    if [[ ! -d "$asset_dir" ]]; then
+        log_warn "Asset directory not found: $asset_dir"
+        return 0
+    fi
+    
+    # Ensure target directory exists
+    ensure_dir "$target_dir"
+    
+    # Copy all files from asset directory
+    for file in "$asset_dir"/*; do
+        if [[ -f "$file" ]]; then
+            local filename=$(basename "$file")
+            log_debug "Copying: $filename"
+            copy_files "$file" "$target_dir/$filename" "$filename"
+        fi
+    done
+    
+    # Make shell scripts executable
+    if [[ -f "$target_dir/setup-node.sh" ]]; then
+        chmod +x "$target_dir/setup-node.sh"
+        log_debug "Made setup-node.sh executable"
+    fi
+    if [[ -f "$target_dir/setup-node.bat" ]]; then
+        chmod +x "$target_dir/setup-node.bat"
+        log_debug "Made setup-node.bat executable"
+    fi
+    
+    log_success "Asset files copied to: $target_dir"
+}
+
+# Clean IDEA resources after build
+# This removes temporary build artifacts from resources directory
+clean_idea_resources_postbuild() {
+    log_step "Cleaning IDEA temporary resources after build..."
+    
+    local builtin_nodejs_dir="$IDEA_BUILD_DIR/src/main/resources/builtin-nodejs"
+    local scripts_dir="$IDEA_BUILD_DIR/src/main/resources/scripts"
+    
+    # Remove builtin-nodejs directory
+    if [[ -d "$builtin_nodejs_dir" ]]; then
+        log_info "Removing builtin-nodejs directory..."
+        remove_dir "$builtin_nodejs_dir"
+        log_debug "Removed: $builtin_nodejs_dir"
+    fi
+    
+    # Remove scripts directory
+    if [[ -d "$scripts_dir" ]]; then
+        log_info "Removing scripts directory..."
+        remove_dir "$scripts_dir"
+        log_debug "Removed: $scripts_dir"
+    fi
+    
+    log_success "IDEA temporary resources cleaned"
+}
+
 # Build IDEA plugin
 build_idea_plugin() {
     if [[ "$SKIP_IDEA_BUILD" == "true" ]]; then
@@ -367,6 +572,9 @@ build_idea_plugin() {
     if [[ ! -f "build.gradle" && ! -f "build.gradle.kts" ]]; then
         die "No Gradle build file found in IDEA directory"
     fi
+    
+    # Prepare builtin Node.js before building (so it gets packaged into the plugin)
+    prepare_builtin_nodejs_prebuild
     
     # Use gradlew if available, otherwise use system gradle
     local gradle_cmd="gradle"
@@ -398,6 +606,9 @@ build_idea_plugin() {
     else
         log_warn "IDEA plugin file not found in build/distributions"
     fi
+    
+    # Clean temporary resources after successful build
+    clean_idea_resources_postbuild
 }
 
 # Clean build artifacts
@@ -424,6 +635,19 @@ clean_build() {
         cd "$IDEA_BUILD_DIR"
         [[ -d "build" ]] && remove_dir "build"
         [[ -d "$VSCODE_PLUGIN_TARGET_DIR" ]] && remove_dir "$VSCODE_PLUGIN_TARGET_DIR"
+        # Clean builtin Node.js from resources directory
+        [[ -d "$BUILTIN_NODEJS_DIR" ]] && remove_dir "$BUILTIN_NODEJS_DIR"
+        # Clean asset files from resources directory
+        local scripts_resource_dir="$IDEA_BUILD_DIR/src/main/resources/scripts"
+        if [[ -d "$scripts_resource_dir" ]]; then
+            [[ -f "$scripts_resource_dir/setup-node.sh" ]] && remove_file "$scripts_resource_dir/setup-node.sh"
+            [[ -f "$scripts_resource_dir/setup-node.bat" ]] && remove_file "$scripts_resource_dir/setup-node.bat"
+            [[ -f "$scripts_resource_dir/NODE_SETUP_README.md" ]] && remove_file "$scripts_resource_dir/NODE_SETUP_README.md"
+            # Remove directory if empty
+            if [[ -z "$(ls -A "$scripts_resource_dir" 2>/dev/null)" ]]; then
+                remove_dir "$scripts_resource_dir"
+            fi
+        fi
     fi
     
     # Clean debug resources

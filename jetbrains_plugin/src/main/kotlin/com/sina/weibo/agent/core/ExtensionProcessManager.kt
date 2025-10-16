@@ -72,17 +72,39 @@ class ExtensionProcessManager : Disposable {
         
         try {
             // Prepare Node.js executable path
-            val nodePath = findNodeExecutable()
+            var nodePath = findNodeExecutable()
             if (nodePath == null) {
-                LOG.error("Failed to find Node.js executable")
+                LOG.warn("Node.js not found, attempting to run setup script...")
                 
-                // Show notification to prompt user to install Node.js
-                NotificationUtil.showError(
-                    "Node.js environment missing",
-                    "Node.js environment not detected, please install Node.js and try again. Recommended version: $MIN_REQUIRED_NODE_VERSION or higher."
+                // Show notification that we're attempting to install
+                NotificationUtil.showInfo(
+                    "Setting up Node.js",
+                    "没有找到 NodeJS. 正在安装 Nodejs $MIN_REQUIRED_NODE_VERSION..."
                 )
                 
-                return false
+                // Try to run setup script
+                if (runNodeSetupScript()) {
+                    LOG.info("Setup script completed, retrying Node.js detection...")
+                    // Successfully installed
+                    NotificationUtil.showInfo(
+                        "Node.js setup completed",
+                        "NodeJS 安装成功"
+                    )
+                    // Retry finding Node.js after setup
+                    nodePath = findNodeExecutable()
+                }
+                
+                // If still not found, show error
+                if (nodePath == null) {
+                    LOG.error("Failed to find Node.js executable even after running setup script")
+                    
+                    NotificationUtil.showError(
+                        "Node.js environment missing",
+                        "Failed to setup Node.js automatically. Please install Node.js manually and try again. Recommended version: $MIN_REQUIRED_NODE_VERSION or higher."
+                    )
+                    
+                    return false
+                }
             }
             
             // Check Node.js version
@@ -290,12 +312,16 @@ class ExtensionProcessManager : Disposable {
     
     /**
      * Find Node.js executable
+     * This function only searches for Node.js, does not install it
      */
     private fun findNodeExecutable(): String? {
-        // First check built-in Node.js
+        LOG.info("Starting Node.js detection...")
+        
+        // First check built-in Node.js in plugin resources
         val resourcesPath = PluginResourceUtil.getResourcePath(PLUGIN_ID, NODE_MODULES_PATH)
         if (resourcesPath != null) {
             val resourceDir = File(resourcesPath)
+            LOG.info("Checking plugin resources directory: ${resourceDir.absolutePath}")
             if (resourceDir.exists() && resourceDir.isDirectory) {
                 val nodeBin = if (SystemInfo.isWindows) {
                     File(resourceDir, "node.exe")
@@ -303,14 +329,142 @@ class ExtensionProcessManager : Disposable {
                     File(resourceDir, ".bin/node")
                 }
                 
+                LOG.info("Checking for built-in Node.js at: ${nodeBin.absolutePath}, exists: ${nodeBin.exists()}, canExecute: ${nodeBin.canExecute()}")
                 if (nodeBin.exists() && nodeBin.canExecute()) {
+                    LOG.info("Found built-in Node.js: ${nodeBin.absolutePath}")
                     return nodeBin.absolutePath
                 }
             }
         }
         
+        // Check Node.js installed by setup script in user's local directory
+        val localNodePath = if (SystemInfo.isWindows) {
+            // Windows: %LOCALAPPDATA%\nodejs\node.exe
+            val localAppData = System.getenv("LOCALAPPDATA") ?: "${System.getProperty("user.home")}\\AppData\\Local"
+            LOG.info("Windows detected. LOCALAPPDATA: $localAppData")
+            File(localAppData, "nodejs\\node.exe")
+        } else {
+            // Linux/Mac: $HOME/.local/share/nodejs/bin/node
+            val userHome = System.getProperty("user.home")
+            LOG.info("Unix-like system detected. HOME: $userHome")
+            File(userHome, ".local/share/nodejs/bin/node")
+        }
+        
+        LOG.info("Checking for setup-installed Node.js at: ${localNodePath.absolutePath}")
+        LOG.info("File exists: ${localNodePath.exists()}, isFile: ${localNodePath.isFile}, canExecute: ${localNodePath.canExecute()}")
+        
+        // On Windows, .exe files are executable if they exist; on Unix, check canExecute()
+        val isExecutable = if (SystemInfo.isWindows) {
+            localNodePath.exists() && localNodePath.isFile
+        } else {
+            localNodePath.exists() && localNodePath.canExecute()
+        }
+        
+        if (isExecutable) {
+            LOG.info("Found setup-installed Node.js: ${localNodePath.absolutePath}")
+            return localNodePath.absolutePath
+        }
+        
         // Then check system path
-        return findExecutableInPath("node")
+        LOG.info("Checking system PATH for Node.js...")
+        val systemNode = findExecutableInPath("node")
+        if (systemNode != null) {
+            LOG.info("Found system Node.js: $systemNode")
+            return systemNode
+        }
+        
+        LOG.warn("Node.js not found in built-in, user-local, or system path")
+        return null
+    }
+    
+    /**
+     * Run Node.js setup script to install builtin Node.js
+     * @return true if script executed successfully, false otherwise
+     */
+    private fun runNodeSetupScript(): Boolean {
+        try {
+            // Determine script name based on OS
+            val scriptName = when {
+                SystemInfo.isWindows -> "setup-node.bat"
+                SystemInfo.isMac || SystemInfo.isLinux -> "setup-node.sh"
+                else -> {
+                    LOG.error("Unsupported operating system for Node.js setup")
+                    return false
+                }
+            }
+            
+            // Get script path from plugin resources
+            val scriptPath = PluginResourceUtil.getResourcePath(PLUGIN_ID, "scripts/$scriptName")
+            if (scriptPath == null) {
+                LOG.error("Setup script not found in plugin resources: scripts/$scriptName")
+                return false
+            }
+            
+            val scriptFile = File(scriptPath)
+            if (!scriptFile.exists()) {
+                LOG.error("Setup script file does not exist: $scriptPath")
+                return false
+            }
+            
+            // Get builtin-nodejs directory path
+            val builtinNodejsPath = PluginResourceUtil.getResourcePath(PLUGIN_ID, "builtin-nodejs")
+            if (builtinNodejsPath == null) {
+                LOG.error("builtin-nodejs directory not found in plugin resources")
+                return false
+            }
+            
+            // Get the parent directory (resources root) as working directory
+            val resourcesRoot = scriptFile.parentFile?.parentFile
+            if (resourcesRoot == null || !resourcesRoot.exists()) {
+                LOG.error("Cannot determine plugin resources root directory")
+                return false
+            }
+            
+            // Make script executable on Unix-like systems
+            if (!SystemInfo.isWindows) {
+                scriptFile.setExecutable(true, false)
+            }
+            
+            LOG.info("Running Node.js setup script: $scriptPath")
+            LOG.info("Working directory: ${resourcesRoot.absolutePath}")
+            LOG.info("Builtin Node.js directory: $builtinNodejsPath")
+            
+            // Build command based on OS
+            val command = if (SystemInfo.isWindows) {
+                listOf("cmd.exe", "/c", scriptPath)
+            } else {
+                listOf("/bin/bash", scriptPath)
+            }
+            
+            // Execute script with working directory set to resources root
+            val processBuilder = ProcessBuilder(command)
+            processBuilder.directory(scriptFile.parentFile) // Set working directory to scripts/
+            processBuilder.redirectErrorStream(true)
+            
+            val process = processBuilder.start()
+            
+            // Read and log output
+            val reader = process.inputStream.bufferedReader()
+            reader.useLines { lines ->
+                lines.forEach { line ->
+                    LOG.info("[Setup Script] $line")
+                }
+            }
+            
+            // Wait for script to complete
+            val exitCode = process.waitFor()
+            
+            if (exitCode == 0) {
+                LOG.info("Node.js setup script completed successfully")
+                return true
+            } else {
+                LOG.error("Node.js setup script failed with exit code: $exitCode")
+                return false
+            }
+        } catch (e: Exception) {
+            LOG.error("Failed to run Node.js setup script", e)
+            return false
+        }
     }
     
     /**

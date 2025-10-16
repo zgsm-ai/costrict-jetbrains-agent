@@ -26,7 +26,7 @@ enum class ExtensionType(val code: String, val displayName: String, val descript
          * @return Default extension type
          */
         fun getDefault(): ExtensionType {
-            return ROO_CODE
+            return COSTRICT
         }
 
         /**
