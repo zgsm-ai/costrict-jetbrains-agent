@@ -51,6 +51,7 @@ deps/roo-code/*
 deps/vscode/*
 !deps/roo-code/.git
 !deps/vscode/.git
+!deps/costrict/.git
 jetbrains_plugin/plugins
 jetbrains_plugin/build
 .gradle
