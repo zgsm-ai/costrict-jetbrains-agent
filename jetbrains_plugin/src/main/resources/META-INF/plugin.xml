@@ -165,5 +165,21 @@ SPDX-License-Identifier: Apache-2.0
                    text="Extension Actions"
                    description="Dynamic extension-specific actions" />
         </group>
+        <!-- Costrict menu integration-->
+        <group id="RunVSAgent.ProjectView.Menu"
+            text="Costrict"
+            description="Costrict AI Assistant"
+            icon="/icons/costrict_logo_13px.svg"
+            popup="true">
+
+            <!-- 动态生成的扩展动作（类似 RunVSAgent.DynamicExtensionActions） -->
+            <group id="RunVSAgent.ProjectView.DynamicExtensionActions"
+                class="com.sina.weibo.agent.extensions.ui.actions.DynamicExtensionActionsGroup"
+                text="Extension Actions"
+                description="Dynamic extension-specific actions"/>
+
+            <!-- 添加到 项目文件右键菜单 -->
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
+        </group>
     </actions>
 </idea-plugin>
